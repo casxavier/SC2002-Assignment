@@ -13,5 +13,5 @@ public abstract class Item {
         return name;
     }
 
-    public abstract void use(Player target);
+    public abstract String use(Player target);
 }
