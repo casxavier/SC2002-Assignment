@@ -1,0 +1,13 @@
+# compiled files
+*.class
+
+# build folder
+out/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# OS junk
+.DS_Store
