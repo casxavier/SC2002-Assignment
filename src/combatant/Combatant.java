@@ -24,6 +24,10 @@ public abstract class Combatant {
         hp -= actualDamage;
     }
 
+    public int getAttack() {
+        return attack;
+    }
+
     public int getSpeed() {
         return speed;
     }
