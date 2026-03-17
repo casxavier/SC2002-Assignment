@@ -19,9 +19,18 @@ public abstract class Combatant {
         return hp > 0;
     }
 
-    public void takeDamage(int damage) {
+    public int takeDamage(int damage) {
         int actualDamage = Math.max(0, damage - defense);
         hp -= actualDamage;
+        return actualDamage;
+    }
+
+    public int getAttack() {
+        return attack;
+    }
+
+    public int getDefense() {
+        return defense;
     }
 
     public int getSpeed() {
