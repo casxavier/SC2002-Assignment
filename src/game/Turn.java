@@ -21,6 +21,17 @@ public class Turn {
         this.dmgDealt = dmgDealt;
         this.isStunned = isStunned;
     }
+
+    // print quick summary after each turn ends
+    public String printSummary(){
+        if(isStunned){ // character acting has stunned effect
+            return String.format("Turn %d: %s was stunned, not able to act.%n", turnNum, characterActed);
+        }
+        if(targetName.equals("ALL")){ //arcane blast
+            return String.format("Turn %d: %s used arcane blast, all enemies dealt %d damage each.%n", turnNum, characterActed, characterActed.getAttack());
+        }
+        return String.format("Turn %d: %s dealt %d damage on %s.%n", turnNum, characterActed.getAttack(), targetName); //basic attack
+    }
 }
 
 

@@ -1,4 +1,8 @@
 import combatant.*;
+import game.Gameflow;
+import game.OrderBySpeed;
+import game.Gameflow.Difficulty;
+
 import java.util.Scanner;
 
 public class Main {
@@ -58,14 +62,34 @@ public class Main {
         System.out.println("2. Medium");
         System.out.println("3. Hard");
         System.out.print("Select Difficulty: ");
-        int difficulty = scanner.nextInt();
-        while (difficulty < 1 || difficulty > 3) {
+        int chosenDifficulty = scanner.nextInt();
+        while (chosenDifficulty < 1 || chosenDifficulty > 3) {
             System.err.println("Invalid choice. Please select 1, 2 or 3.");
             System.out.print("Select Difficulty: ");
-            difficulty = scanner.nextInt();
+            chosenDifficulty = scanner.nextInt();
         }
 
         System.out.printf("You are about to start as a %s on %s mode. Good luck!\n\n", player.getName(),
-                difficulty == 1 ? "easy" : difficulty == 2 ? "medium" : "hard");
+                chosenDifficulty == 1 ? "easy" : chosenDifficulty == 2 ? "medium" : "hard");
+
+        Difficulty difficulty;
+        switch (chosenDifficulty) {
+            case 1:  
+                difficulty = Difficulty.EASY;   
+                break;
+            case 2:  
+                difficulty = Difficulty.MEDIUM; 
+                break;
+            case 3:  
+                difficulty = Difficulty.HARD;   
+                break;
+            default: 
+                difficulty = Difficulty.EASY;   
+                break;
+        }
+        Gameflow newGame = new Gameflow(player,difficulty, new OrderBySpeed());
+
+        //start new game
+        newGame.startGame();
     }
 }
