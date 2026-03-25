@@ -54,12 +54,12 @@ public class TestItem {
         System.out.println("HP after attack: " + player.getHp());
 
         // next turn
-        player.updateStatus();
+        player.onTurnStart();
         damage = player.takeDamage(50);
         System.out.println("Damage taken (2nd turn smoke): " + damage);
 
         // smoke expired
-        player.updateStatus();
+        player.onTurnStart();
         damage = player.takeDamage(50);
         System.out.println("Damage after smoke expired: " + damage);
         System.out.println();

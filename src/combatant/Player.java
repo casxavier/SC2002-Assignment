@@ -3,13 +3,14 @@ package combatant;
 import item.Item;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 public abstract class Player extends Combatant {
     protected int maxHp;
     protected int smokeTurns = 0;
     protected List<Item> inventory = new ArrayList<>();
     private int specialSkillCooldown;
-    private int defaultSpecialSkillCooldown = 3;
+    private final int defaultSpecialSkillCooldown = 3;
     private boolean hasPowerStoneCharge;
 
     public Player(String name, int hp, int attack, int defense, int speed) {
@@ -20,6 +21,9 @@ public abstract class Player extends Combatant {
     }
 
     public void heal(int amount) {
+        if (amount <= 0) {
+            return;
+        }
         hp = Math.min(hp + amount, maxHp);
     }
 
@@ -29,19 +33,18 @@ public abstract class Player extends Combatant {
             damage = 0;
         }
 
-        int actualDamage = Math.max(0, damage - getDefense());
-        hp -= actualDamage;
-
-        return actualDamage;
+        return super.takeDamage(damage);
     }
 
-    public void updateStatus() {
+    @Override
+    public void onTurnStart() {
         if (smokeTurns > 0) {
             smokeTurns--;
         }
         if (specialSkillCooldown > 0) {
             specialSkillCooldown--;
         }
+        super.onTurnStart();
     }
 
     // Special Skills
@@ -65,10 +68,14 @@ public abstract class Player extends Combatant {
     // Items Inventory
 
     public List<Item> getInventory() {
-        return inventory;
+        return Collections.unmodifiableList(inventory);
     }
 
     public Item getItem(int index) {
+        if (index < 0 || index >= inventory.size()) {
+            System.out.println("ERROR: Invalid item index");
+            return null;
+        }
         return inventory.get(index);
     }
 
