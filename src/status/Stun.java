@@ -10,10 +10,9 @@ public class Stun implements StatusEffect {
     private int remainingTurns;
 
     public Stun() {
-        // Initialize with 3 because we decrement in onTurnStart BEFORE canAct check
-        // Turn 1: 3→2, canAct checks 2>0 → blocked
-        // Turn 2: 2→1, canAct checks 1>0 → blocked
-        // Turn 3: 1→0, canAct checks 0>0 → free to act
+        // Two skipped turns (current + next): internal counter starts at 3 so that
+        // after each victim onTurnStart() decrement, canAct is false while
+        // remainingTurns is 1 or 2, and true once it reaches 0 (see spec Appendix A).
         this.remainingTurns = 3;
     }
 
@@ -32,7 +31,6 @@ public class Stun implements StatusEffect {
 
     @Override
     public boolean canAct() {
-        // Can act only if remainingTurns is 0 or less
         return remainingTurns <= 0;
     }
 

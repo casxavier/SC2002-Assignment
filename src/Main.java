@@ -1,7 +1,11 @@
 import combatant.*;
 import game.Gameflow;
-import game.OrderBySpeed;
 import game.Gameflow.Difficulty;
+import game.OrderBySpeed;
+import item.Item;
+import item.Potion;
+import item.PowerStone;
+import item.SmokeBomb;
 
 import java.util.Scanner;
 
@@ -87,9 +91,41 @@ public class Main {
                 difficulty = Difficulty.EASY;   
                 break;
         }
-        Gameflow newGame = new Gameflow(player,difficulty, new OrderBySpeed());
 
-        //start new game
+        scanner.nextLine();
+        System.out.println("Choose two single-use items (duplicates allowed):");
+        System.out.println("1. Potion — Heal 100 HP");
+        System.out.println("2. Power Stone — One free special skill use");
+        System.out.println("3. Smoke Bomb — Enemies deal 0 damage this turn and next");
+        player.addItem(promptItem(scanner, "First item"));
+        player.addItem(promptItem(scanner, "Second item"));
+        System.out.println();
+
+        Gameflow newGame = new Gameflow(player, difficulty, new OrderBySpeed());
         newGame.startGame();
+    }
+
+    private static Item promptItem(Scanner scanner, String label) {
+        while (true) {
+            System.out.print(label + " (1-3): ");
+            String line = scanner.nextLine().trim();
+            int n;
+            try {
+                n = Integer.parseInt(line);
+            } catch (NumberFormatException e) {
+                System.out.println("Enter 1, 2, or 3.");
+                continue;
+            }
+            switch (n) {
+                case 1:
+                    return new Potion();
+                case 2:
+                    return new PowerStone();
+                case 3:
+                    return new SmokeBomb();
+                default:
+                    System.out.println("Enter 1, 2, or 3.");
+            }
+        }
     }
 }
