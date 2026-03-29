@@ -32,5 +32,12 @@ public interface StatusEffect {
     
 
 
+    default int getDefenseModifier() {
+        return 0;
+    }
+
+    
+
+
     boolean isExpired();
 }
