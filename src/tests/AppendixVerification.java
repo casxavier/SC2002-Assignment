@@ -1,3 +1,4 @@
+package tests;
 import action.BattleContext;
 import action.BasicAttackAction;
 import action.ShieldBashSkill;

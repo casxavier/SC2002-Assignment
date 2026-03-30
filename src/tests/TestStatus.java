@@ -1,3 +1,4 @@
+package tests;
 import combatant.Wizard;
 import combatant.Warrior;
 import combatant.Goblin;
