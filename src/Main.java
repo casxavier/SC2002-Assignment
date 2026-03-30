@@ -1,8 +1,7 @@
 import combatant.*;
 import game.Gameflow;
-import game.OrderBySpeed;
 import game.Gameflow.Difficulty;
-
+import game.OrderBySpeed;
 import java.util.Scanner;
 
 public class Main {
@@ -74,22 +73,22 @@ public class Main {
 
         Difficulty difficulty;
         switch (chosenDifficulty) {
-            case 1:  
-                difficulty = Difficulty.EASY;   
+            case 1:
+                difficulty = Difficulty.EASY;
                 break;
-            case 2:  
-                difficulty = Difficulty.MEDIUM; 
+            case 2:
+                difficulty = Difficulty.MEDIUM;
                 break;
-            case 3:  
-                difficulty = Difficulty.HARD;   
+            case 3:
+                difficulty = Difficulty.HARD;
                 break;
-            default: 
-                difficulty = Difficulty.EASY;   
+            default:
+                difficulty = Difficulty.EASY;
                 break;
         }
-        Gameflow newGame = new Gameflow(player,difficulty, new OrderBySpeed());
+        Gameflow newGame = new Gameflow(player, difficulty, new OrderBySpeed());
 
-        //start new game
-        newGame.startGame();
+        // start new game
+        // newGame.startGame();
     }
 }
