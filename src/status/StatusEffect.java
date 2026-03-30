@@ -30,6 +30,13 @@ public interface StatusEffect {
     }
 
     /**
+     * Defense modifier contributed by this effect (e.g. Defend buff).
+     */
+    default int getDefenseModifier() {
+        return 0;
+    }
+
+    /**
      * Whether the effect has completed and should be removed.
      */
     boolean isExpired();
