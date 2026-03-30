@@ -13,20 +13,16 @@ public class dedOrAliCount {
     playeralive = 0;
     enemyalive = 0;
     for (Player p : players) {
-        if (p.hp > 0) {playeralive++;}
+        if (p.isAlive()) {playeralive++;}
     }
     for (Enemy e : enemies) {
-        if (e.hp > 0) {enemyalive++;}
+        if (e.isAlive()) {enemyalive++;}
     }
   }
-  //print alive count
-  public void printBothCounts() {
-    printP();
-    printE();
-  }
   
-  public void printP() {System.out.println("Player alive: " + playeralive);}
+  //return alive count
+  public int PAlive() {return playeralive;}
   
-  public void printE() {System.out.println("Enemy alive: " + enemyalive);}
+  public int EAlive() {return enemyalive;}
   
 }
