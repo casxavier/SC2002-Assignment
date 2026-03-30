@@ -7,7 +7,7 @@ public class Warrior extends Player {
     }
 
     public void shieldBash(Enemy enemy) {
-        enemy.hp -= this.attack;
+        enemy.takeDamage(this.attack);
         addStatusEffect(stun);    
     }
 }
