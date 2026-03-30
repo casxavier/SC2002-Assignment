@@ -1,19 +1,12 @@
 package game;
 
-import combatant.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
 import action.Action;
-import action.ActionResult;
 import action.BasicAttackAction;
 import action.BattleContext;
 import action.DefendAction;
 import action.ItemAction;
 import action.SpecialSkillAction;
 import combatant.Combatant;
-import combatant.Enemy;
 import combatant.Goblin;
 import combatant.Player;
 import combatant.Warrior;
@@ -21,13 +14,15 @@ import combatant.Wizard;
 import combatant.Wolf;
 import item.Item;
 import item.PowerStone;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Gameflow {
     public enum Difficulty {
         EASY, MEDIUM, HARD
     }
 
-    private final Player player;
     private static GameSettings gameSettings;
     private final List<Combatant> enemies;
     private final TurnOrderStrategy turnOrderStrategy;
@@ -58,7 +53,7 @@ public class Gameflow {
 
     // Create the settings for current game
     public void initializeGame() {
-        Scanner scanner = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
         int choice = 0;
         System.out.println("First, select your character class: ");
         System.out.println("1. Warrior");
@@ -78,11 +73,11 @@ public class Gameflow {
                 "Special Skill: Arcane Blast - Deal basic attack damage to all enemies. Each enemy defeated by Arcane Blast adds 10 to the Wizard's attack, lasting until the end of the level.");
         System.out.println("------------------------------");
         System.out.print("Select Character Class (1 or 2): ");
-        choice = scanner.nextInt();
+        choice = sc.nextInt();
         while (choice < 1 || choice > 2) {
             System.err.println("Invalid choice. Please select 1 or 2.");
             System.out.print("Select Character Class (1 or 2): ");
-            choice = scanner.nextInt();
+            choice = sc.nextInt();
         }
 
         // Switch case to allow expansion in the future
@@ -104,11 +99,11 @@ public class Gameflow {
         System.out.println("2. Medium");
         System.out.println("3. Hard");
         System.out.print("Select Difficulty: ");
-        int chosenDifficulty = scanner.nextInt();
+        int chosenDifficulty = sc.nextInt();
         while (chosenDifficulty < 1 || chosenDifficulty > 3) {
             System.err.println("Invalid choice. Please select 1, 2 or 3.");
             System.out.print("Select Difficulty: ");
-            chosenDifficulty = scanner.nextInt();
+            chosenDifficulty = sc.nextInt();
         }
 
         System.out.printf("You are about to start as a %s on %s mode. Good luck!\n\n",
@@ -135,6 +130,7 @@ public class Gameflow {
 
     // Run Game Loop
     public void executeGameLoop() {
+        Scanner sc = new Scanner(System.in);
         List<Combatant> orderedCombatants = getOrder();
         printTurnOrder(orderedCombatants);
 
@@ -160,10 +156,10 @@ public class Gameflow {
             turnCount++;
         }
 
-        if (player instanceof Wizard) {
-            ((Wizard) player).resetArcaneBlastBonus();
+        if (gameSettings.getPlayer() instanceof Wizard) {
+            ((Wizard) gameSettings.getPlayer()).resetArcaneBlastBonus();
         }
-        printGameCompletionScreen(sc);
+        printGameCompletionScreen();
         sc.close();
     }
 
@@ -178,7 +174,7 @@ public class Gameflow {
     }
 
     private void printBattleState() {
-        System.out.printf("%s — HP: %d%n", player.getName(), player.getHp());
+        System.out.printf("%s — HP: %d%n", gameSettings.getPlayer().getName(), gameSettings.getPlayer().getHp());
         for (int i = 0; i < enemies.size(); i++) {
             Combatant e = enemies.get(i);
             if (e.isAlive()) {
@@ -186,7 +182,7 @@ public class Gameflow {
             }
         }
         System.out.printf("Special cooldown: %d | Can use special: %s%n",
-                player.getSpecialSkillCooldown(), player.canUseSpecialSkill());
+                gameSettings.getPlayer().getSpecialSkillCooldown(), gameSettings.getPlayer().canUseSpecialSkill());
     }
 
     private void runPlayerTurn(Scanner sc, BattleContext ctx) {
@@ -232,14 +228,14 @@ public class Gameflow {
                         System.out.println("Invalid target.");
                         continue;
                     }
-                    action = new BasicAttackAction(player, alive.get(t));
+                    action = new BasicAttackAction(gameSettings.getPlayer(), alive.get(t));
                     break;
                 }
                 case 2:
-                    action = new DefendAction(player);
+                    action = new DefendAction(gameSettings.getPlayer());
                     break;
                 case 3: {
-                    List<Item> inv = player.getInventory();
+                    List<Item> inv = gameSettings.getPlayer().getInventory();
                     if (inv.isEmpty()) {
                         System.out.println("No items in inventory.");
                         continue;
@@ -258,7 +254,7 @@ public class Gameflow {
                     }
                     Combatant pst = null;
                     if (idx >= 0 && idx < inv.size() && inv.get(idx) instanceof PowerStone
-                            && player instanceof Warrior) {
+                            && gameSettings.getPlayer() instanceof Warrior) {
                         List<Combatant> alive = aliveEnemies();
                         if (alive.isEmpty()) {
                             System.out.println("No valid target for Power Stone.");
@@ -281,12 +277,12 @@ public class Gameflow {
                             continue;
                         }
                     }
-                    action = new ItemAction(player, idx, pst);
+                    action = new ItemAction(gameSettings.getPlayer(), idx, pst);
                     break;
                 }
                 case 4: {
                     Combatant skillTarget = null;
-                    if (player instanceof Warrior) {
+                    if (gameSettings.getPlayer() instanceof Warrior) {
                         List<Combatant> alive = aliveEnemies();
                         if (alive.isEmpty()) {
                             System.out.println("No enemies for Shield Bash.");
@@ -309,7 +305,7 @@ public class Gameflow {
                             continue;
                         }
                     }
-                    action = new SpecialSkillAction(player, skillTarget);
+                    action = new SpecialSkillAction(gameSettings.getPlayer(), skillTarget);
                     break;
                 }
                 default:
@@ -351,11 +347,13 @@ public class Gameflow {
     public void printGameCompletionScreen() {
         // prints either "Victory" or "Defeat" based on conditions (Pending
         // implementation of player +enemy)
+        Scanner sc = new Scanner(System.in);
         String gameResult = won ? "Victory" : "Defeat";
         System.out.println(gameResult);
         if (won) {
             System.out.println("Congratulations, you have defeated all your enemies.");
-            System.out.printf("Statistics: Remaining HP: %d | Total Rounds: %d%n", player.getHp(), turnCount);
+            System.out.printf("Statistics: Remaining HP: %d | Total Rounds: %d%n", gameSettings.getPlayer().getHp(),
+                    turnCount);
         } else {
             System.out.println("Defeated. Don't give up, try again!");
             int left = 0;
@@ -413,10 +411,11 @@ public class Gameflow {
             default:
                 break;
         }
+        return enemies;
     }
 
     private void spawnBackupWave() {
-        switch (difficulty) {
+        switch (gameSettings.getDifficulty()) {
             case MEDIUM:
                 enemies.add(new Wolf());
                 enemies.add(new Wolf());
