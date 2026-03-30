@@ -8,7 +8,7 @@ public class dedOrAliCount {
   private static int playeralive = 0;
   private static int enemyalive = 0;
   
-  //pass in a list of players and enemies created (created in gameflow), then set counter
+  
   public void setCounter(List<Player> players, List<Enemy> enemies) {
     playeralive = 0;
     enemyalive = 0;
@@ -19,7 +19,7 @@ public class dedOrAliCount {
         if (e.hp > 0) {enemyalive++;}
     }
   }
-  //print alive count
+  
   public void printBothCounts() {
     printP();
     printE();
