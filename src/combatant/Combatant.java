@@ -28,10 +28,24 @@ public abstract class Combatant {
         return hp > 0;
     }
 
-    public int takeDamage(int damage) {
-        int actualDamage = Math.max(0, damage - defense);
+    /**
+     * @param rawAttack attacker attack power (before target mitigation)
+     */
+    public int takeDamage(int rawAttack) {
+        int mitigation = getEffectiveDefense();
+        int actualDamage = Math.max(0, rawAttack - mitigation);
         hp -= actualDamage;
+        if (hp < 0) {
+            hp = 0;
+        }
         return actualDamage;
+    }
+
+    /**
+     * Base defense plus all active status defense modifiers.
+     */
+    public int getEffectiveDefense() {
+        return defense + getDefenseModifierFromStatuses();
     }
 
     /**
@@ -131,6 +145,14 @@ public abstract class Combatant {
         int total = 0;
         for (StatusEffect effect : statusEffects) {
             total += effect.getAttackModifier();
+        }
+        return total;
+    }
+
+    private int getDefenseModifierFromStatuses() {
+        int total = 0;
+        for (StatusEffect effect : statusEffects) {
+            total += effect.getDefenseModifier();
         }
         return total;
     }

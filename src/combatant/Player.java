@@ -41,10 +41,11 @@ public abstract class Player extends Combatant {
         if (smokeTurns > 0) {
             smokeTurns--;
         }
-        if (specialSkillCooldown > 0) {
+        super.onTurnStart();
+        // Spec: special cooldown decreases only if a turn by the combatant took place.
+        if (canAct() && specialSkillCooldown > 0) {
             specialSkillCooldown--;
         }
-        super.onTurnStart();
     }
 
     // Special Skills

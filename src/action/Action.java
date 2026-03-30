@@ -3,32 +3,26 @@ package action;
 import combatant.Combatant;
 
 /**
- * Minimal action abstraction.
- *
- * Integration point with status effects:
- * - Before performing any action, call {@link #canExecute()}.
- * - If false, caller can treat it as a skipped turn (e.g., due to Stun).
+ * Command executed during a combatant's turn. UI gathers input; battle code calls {@link #execute}.
  */
 public abstract class Action {
     protected final Combatant actor;
-    protected final Combatant target;
 
-    public Action(Combatant actor, Combatant target) {
+    public Action(Combatant actor) {
         this.actor = actor;
-        this.target = target;
+    }
+
+    public Combatant getActor() {
+        return actor;
     }
 
     /**
-     * Checks if the actor is alive and allowed to act this turn.
-     * This is where status effects like Stun are respected.
+     * Checks if the actor is alive and allowed to act this turn (e.g. not Stunned).
      */
     public boolean canExecute() {
         return actor != null && actor.isAlive() && actor.canAct();
     }
 
-    /**
-     * Human-readable reason for blocked execution.
-     */
     public String blockedReason() {
         if (actor == null) {
             return "No actor.";
@@ -41,4 +35,6 @@ public abstract class Action {
         }
         return "";
     }
+
+    public abstract ActionResult execute(BattleContext ctx);
 }
