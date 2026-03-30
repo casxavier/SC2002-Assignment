@@ -13,7 +13,6 @@ public class Stun implements StatusEffect {
         
         
         
-        
         this.remainingTurns = 3;
     }
 
@@ -32,7 +31,6 @@ public class Stun implements StatusEffect {
 
     @Override
     public boolean canAct() {
-        
         return remainingTurns <= 0;
     }
 

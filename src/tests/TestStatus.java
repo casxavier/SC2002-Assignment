@@ -1,3 +1,4 @@
+package tests;
 import combatant.Wizard;
 import combatant.Warrior;
 import combatant.Goblin;
@@ -78,7 +79,7 @@ public class TestStatus {
         System.out.println("  Arcane Blast bonus: " + wizard.getArcaneBlastBonus());
 
         System.out.println("\nAfter level end reset:");
-        wizard.resetArcaneBlastBonusAtLevelEnd();
+        wizard.resetArcaneBlastBonus();
         System.out.println("  Base attack: " + wizard.getBaseAttack());
         System.out.println("  Actual attack: " + wizard.getAttack());
         System.out.println("  Arcane Blast bonus: " + wizard.getArcaneBlastBonus());
@@ -110,7 +111,7 @@ public class TestStatus {
         System.out.println("  Wizard2 attack: " + wizard2.getAttack() + " (bonus: " + wizard2.getArcaneBlastBonus() + ")");
 
         System.out.println("\nWizard1 resets at level end:");
-        wizard1.resetArcaneBlastBonusAtLevelEnd();
+        wizard1.resetArcaneBlastBonus();
         System.out.println("  Wizard1 attack: " + wizard1.getAttack() + " (bonus: " + wizard1.getArcaneBlastBonus() + ")");
         System.out.println("  Wizard2 attack: " + wizard2.getAttack() + " (bonus: " + wizard2.getArcaneBlastBonus() + ")");
 

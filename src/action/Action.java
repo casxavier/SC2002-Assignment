@@ -5,29 +5,23 @@ import combatant.Combatant;
 
 
 
-
-
-
-
 public abstract class Action {
     protected final Combatant actor;
-    protected final Combatant target;
 
-    public Action(Combatant actor, Combatant target) {
+    public Action(Combatant actor) {
         this.actor = actor;
-        this.target = target;
+    }
+
+    public Combatant getActor() {
+        return actor;
     }
 
     
-
 
 
     public boolean canExecute() {
         return actor != null && actor.isAlive() && actor.canAct();
     }
-
-    
-
 
     public String blockedReason() {
         if (actor == null) {
@@ -41,4 +35,6 @@ public abstract class Action {
         }
         return "";
     }
+
+    public abstract ActionResult execute(BattleContext ctx);
 }
