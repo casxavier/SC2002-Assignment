@@ -1,14 +1,6 @@
 package game;
 
-import action.Action;
-import action.BasicAttackAction;
-import action.BattleContext;
-import action.DefendAction;
-import action.ItemAction;
-import action.SpecialSkillAction;
 import combatant.*;
-import item.Item;
-import item.PowerStone;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -108,13 +100,16 @@ public class Gameflow {
 
         // Main game loop, continues until either player is defeated.
         // Break statement below exits if all enemies are defeated.
-        while (gameSettings.getPlayer().isAlive()) {
+        Player player = gameSettings.getPlayer();
+        while (player.isAlive()) {
 
             System.out.printf("Round %d\n", turnCount);
             System.out.println("==========");
 
+            printBattleState();
+
             // Execute the turn
-            currentTurn = new Turn(turnCount, orderedCombatants, "", "", 0, false);
+            currentTurn = new Turn(turnCount, player, enemies, orderedCombatants);
             currentTurn.executeTurn();
 
             // Remove dead enemies from list
@@ -174,7 +169,6 @@ public class Gameflow {
         }
     }
 
-    // TO EDIT
     // Print Victory or Defeat depending on conditions at end of game
     public void gameCompletion() {
         // prints either "Victory" or "Defeat" based on conditions (Pending
@@ -272,143 +266,4 @@ public class Gameflow {
                 gameSettings.getPlayer().getSpecialSkillCooldown(), gameSettings.getPlayer().canUseSpecialSkill());
     }
 
-    private void runPlayerTurn(Scanner sc, BattleContext ctx) {
-        while (true) {
-            printBattleState();
-            System.out.println("Choose action:");
-            System.out.println("1. Basic Attack");
-            System.out.println("2. Defend");
-            System.out.println("3. Use Item");
-            System.out.println("4. Special Skill");
-            System.out.print("Enter choice (1-4): ");
-
-            int choice;
-            try {
-                choice = Integer.parseInt(sc.nextLine().trim());
-            } catch (NumberFormatException ex) {
-                System.out.println("Invalid input.");
-                continue;
-            }
-
-            Action action = null;
-
-            switch (choice) {
-                case 1: {
-                    List<Combatant> alive = aliveEnemies();
-                    if (alive.isEmpty()) {
-                        System.out.println("No enemies to attack.");
-                        continue;
-                    }
-                    System.out.println("Select target:");
-                    for (int i = 0; i < alive.size(); i++) {
-                        System.out.printf("  %d. %s (HP %d)\n", i + 1, alive.get(i).getName(), alive.get(i).getHp());
-                    }
-                    System.out.print("Target number: ");
-                    int t;
-                    try {
-                        t = Integer.parseInt(sc.nextLine().trim()) - 1;
-                    } catch (NumberFormatException ex) {
-                        System.out.println("Invalid target.");
-                        continue;
-                    }
-                    if (t < 0 || t >= alive.size()) {
-                        System.out.println("Invalid target.");
-                        continue;
-                    }
-                    action = new BasicAttackAction(gameSettings.getPlayer(), alive.get(t));
-                    break;
-                }
-                case 2:
-                    action = new DefendAction(gameSettings.getPlayer());
-                    break;
-                case 3: {
-                    List<Item> inv = gameSettings.getPlayer().getInventory();
-                    if (inv.isEmpty()) {
-                        System.out.println("No items in inventory.");
-                        continue;
-                    }
-                    System.out.println("Inventory:");
-                    for (int i = 0; i < inv.size(); i++) {
-                        System.out.printf("  %d. %s\n", i, inv.get(i).getName());
-                    }
-                    System.out.print("Item index: ");
-                    int idx;
-                    try {
-                        idx = Integer.parseInt(sc.nextLine().trim());
-                    } catch (NumberFormatException ex) {
-                        System.out.println("Invalid index.");
-                        continue;
-                    }
-                    Combatant pst = null;
-                    if (idx >= 0 && idx < inv.size() && inv.get(idx) instanceof PowerStone
-                            && gameSettings.getPlayer() instanceof Warrior) {
-                        List<Combatant> alive = aliveEnemies();
-                        if (alive.isEmpty()) {
-                            System.out.println("No valid target for Power Stone.");
-                            continue;
-                        }
-                        System.out.println("Select enemy for Shield Bash:");
-                        for (int i = 0; i < alive.size(); i++) {
-                            System.out.printf("  %d. %s\n", i + 1, alive.get(i).getName());
-                        }
-                        System.out.print("Target number: ");
-                        try {
-                            int ti = Integer.parseInt(sc.nextLine().trim()) - 1;
-                            if (ti < 0 || ti >= alive.size()) {
-                                System.out.println("Invalid target.");
-                                continue;
-                            }
-                            pst = alive.get(ti);
-                        } catch (NumberFormatException ex) {
-                            System.out.println("Invalid target.");
-                            continue;
-                        }
-                    }
-                    action = new ItemAction(gameSettings.getPlayer(), idx, pst);
-                    break;
-                }
-                case 4: {
-                    Combatant skillTarget = null;
-                    if (gameSettings.getPlayer() instanceof Warrior) {
-                        List<Combatant> alive = aliveEnemies();
-                        if (alive.isEmpty()) {
-                            System.out.println("No enemies for Shield Bash.");
-                            continue;
-                        }
-                        System.out.println("Select enemy for Shield Bash:");
-                        for (int i = 0; i < alive.size(); i++) {
-                            System.out.printf("  %d. %s\n", i + 1, alive.get(i).getName());
-                        }
-                        System.out.print("Target number: ");
-                        try {
-                            int ti = Integer.parseInt(sc.nextLine().trim()) - 1;
-                            if (ti < 0 || ti >= alive.size()) {
-                                System.out.println("Invalid target.");
-                                continue;
-                            }
-                            skillTarget = alive.get(ti);
-                        } catch (NumberFormatException ex) {
-                            System.out.println("Invalid target.");
-                            continue;
-                        }
-                    }
-                    action = new SpecialSkillAction(gameSettings.getPlayer(), skillTarget);
-                    break;
-                }
-                default:
-                    System.out.println("Invalid choice.");
-                    continue;
-            }
-
-            if (action == null) {
-                continue;
-            }
-            if (!action.canExecute()) {
-                System.out.println(action.blockedReason());
-                continue;
-            }
-            System.out.println(action.execute(ctx).getMessage());
-            return;
-        }
-    }
 }
