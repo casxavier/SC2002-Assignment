@@ -19,7 +19,7 @@ public final class ShieldBashSkill implements SpecialSkill {
     }
 
     @Override
-    public ActionResult execute(Player player, BattleContext ctx, Combatant singleTarget) {
+    public ActionResult execute(Player player, BattleContext ctx, Enemy singleTarget) {
         if (!canUse(player)) {
             return ActionResult.fail(player.getName() + " cannot use Shield Bash right now.");
         }
