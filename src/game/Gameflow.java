@@ -1,10 +1,14 @@
 package game;
 
 import combatant.*;
+import item.*;
+import status.Stun;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
+import java.util.Map;
+import java.util.LinkedHashMap;
 public class Gameflow {
     public enum Difficulty {
         EASY, MEDIUM, HARD
@@ -58,9 +62,15 @@ public class Gameflow {
 
         
         switch (choice) {
-            case 1 -> gameSettings.setPlayer(new Warrior("Warrior"));
-            case 2 -> gameSettings.setPlayer(new Wizard("Wizard"));
-            default -> gameSettings.setPlayer(new Warrior("Warrior"));
+            case 1:
+                gameSettings.setPlayer(new Warrior("Warrior"));
+                break;
+            case 2:
+                gameSettings.setPlayer(new Warrior("Wizard"));
+                break;
+            default:
+                gameSettings.setPlayer(new Warrior("Warrior"));
+                break;
         }
         System.out.println();
 
@@ -82,10 +92,18 @@ public class Gameflow {
                 chosenDifficulty == 1 ? "easy" : chosenDifficulty == 2 ? "medium" : "hard");
 
         switch (chosenDifficulty) {
-            case 1 -> gameSettings.setDifficulty(Difficulty.EASY);
-            case 2 -> gameSettings.setDifficulty(Difficulty.MEDIUM);
-            case 3 -> gameSettings.setDifficulty(Difficulty.HARD);
-            default -> gameSettings.setDifficulty(Difficulty.EASY);
+            case 1:
+                gameSettings.setDifficulty(Difficulty.EASY);
+                break;
+            case 2:
+                gameSettings.setDifficulty(Difficulty.MEDIUM);
+                break;
+            case 3:
+                gameSettings.setDifficulty(Difficulty.HARD);
+                break;
+            default:
+                gameSettings.setDifficulty(Difficulty.EASY);
+                break;
         }
         sc.close();
     }
@@ -148,7 +166,6 @@ public class Gameflow {
     }
 
     
-    
     private List<Combatant> getOrder() {
         List<Combatant> orderedCombatants = new ArrayList<>();
         orderedCombatants.add(gameSettings.getPlayer());
@@ -158,7 +175,44 @@ public class Gameflow {
 
     
     public void printRoundSummary() {
-        System.out.printf("End of Round %d\n", turnCount);
+        Player currPlayer = gameSettings.getPlayer();
+        System.out.printf("End of Round %d:%n", turnCount);
+
+        
+        System.out.printf("%s HP: %d/%d%n", currPlayer.getName(),currPlayer.getHp(),currPlayer.getMaxHp()); 
+
+        
+        for (Combatant aliveEnemy : enemies){
+            System.out.printf("%s HP: %d", aliveEnemy.getName(), aliveEnemy.getHp());
+            if (aliveEnemy.hasStatusEffect(Stun.class)){
+                System.out.print("[STUNNED]");
+            }
+            System.out.println();
+        } 
+        for (Combatant deadEnemy : deadEnemies){
+            System.out.printf("%s HP: 0 (Defeated)%n", deadEnemy.getName());
+        }
+
+        
+        List<Item> inventory = currPlayer.getInventory();
+        if (!inventory.isEmpty()){
+            Map<String,Integer> itemCountMap = new LinkedHashMap<>();
+
+            for (Item i : inventory){
+                itemCountMap.put(i.getName(),itemCountMap.getOrDefault(i.getName(), 0)+1);
+            }
+            for (String itemName: itemCountMap.keySet()){
+                System.out.printf("%s: %d%n", itemName, itemCountMap.get(itemName));
+            }
+        }
+        
+        if (currPlayer.isSmokeActive()){ 
+            System.out.printf("Effect: %d turn%s remaining%n", currPlayer.getSmokeTurns(),currPlayer.getSmokeTurns() == 1?"":"s");
+        }
+        
+        System.out.printf("Special Skills Cooldown: %d%n", currPlayer.getSpecialSkillCooldown(), currPlayer.getSpecialSkillCooldown() == 1 ? "round":"rounds");
+        
+        System.out.println();
     }
 
     
