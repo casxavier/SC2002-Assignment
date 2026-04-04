@@ -6,11 +6,14 @@ import item.Item;
 import item.Potion;
 import item.PowerStone;
 import item.SmokeBomb;
+
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        boolean validChar = false;
+        boolean validDiff = false;
 
         // Start Menu
         System.out.println("Welcome to SC2002 Assignment: Turn-Based Combat Arena! ");
@@ -20,7 +23,6 @@ public class Main {
         // Character Selection
         int choice = 0;
         Player player = null;
-
         System.out.println("First, select your character class: ");
         System.out.println("1. Warrior");
         System.out.println("HP: 260");
@@ -38,12 +40,20 @@ public class Main {
         System.out.println(
                 "Special Skill: Arcane Blast - Deal basic attack damage to all enemies. Each enemy defeated by Arcane Blast adds 10 to the Wizard's attack, lasting until the end of the level.");
         System.out.println("------------------------------");
-        System.out.print("Select Character Class (1 or 2): ");
-        choice = scanner.nextInt();
-        while (choice < 1 || choice > 2) {
-            System.err.println("Invalid choice. Please select 1 or 2.");
-            System.out.print("Select Character Class (1 or 2): ");
-            choice = scanner.nextInt();
+
+        while(!validChar){
+            try{
+                System.out.print("Select Character Class (1 or 2): ");
+                choice = Integer.parseInt(scanner.nextLine().trim()); // convert input to int
+                if (choice < 1 || choice > 2){
+                    throw new IllegalArgumentException("Invalid choice. Please select 1 or 2.");
+                }
+                validChar = true; // exit loop if input valid
+            }catch(NumberFormatException e){
+                System.err.println("Please enter a valid integer (1 or 2).");
+            }catch(IllegalArgumentException e){
+                System.err.println(e.getMessage());
+            }
         }
 
         // Switch case to allow expansion in the future
@@ -60,16 +70,25 @@ public class Main {
         System.out.println();
 
         // Difficulty Selection
+        int chosenDifficulty = 0;
         System.out.println("Next, select your difficulty: ");
         System.out.println("1. Easy");
         System.out.println("2. Medium");
         System.out.println("3. Hard");
-        System.out.print("Select Difficulty: ");
-        int chosenDifficulty = scanner.nextInt();
-        while (chosenDifficulty < 1 || chosenDifficulty > 3) {
-            System.err.println("Invalid choice. Please select 1, 2 or 3.");
-            System.out.print("Select Difficulty: ");
-            chosenDifficulty = scanner.nextInt();
+
+        while(!validDiff){
+            try{
+                System.out.print("Select Difficulty: ");
+                chosenDifficulty = Integer.parseInt(scanner.nextLine().trim()); // convert input to int
+                if (chosenDifficulty <1 || chosenDifficulty >3){
+                    throw new IllegalArgumentException("Invalid choice. Please select 1, 2 or 3.");
+                }
+                validDiff = true;
+            }catch (NumberFormatException e){
+                System.err.println("Invalid choice. Please enter a number.");
+            }catch (IllegalArgumentException e){
+                System.err.println(e.getMessage());
+            }
         }
 
         System.out.printf("You are about to start as a %s on %s mode. Good luck!\n\n", player.getName(),
@@ -101,7 +120,8 @@ public class Main {
         System.out.println();
 
         Gameflow newGame = new Gameflow(player, difficulty, new OrderBySpeed());
-        // newGame.startGame();
+        newGame.initializeGame();
+        newGame.executeGameLoop();
     }
 
     private static Item promptItem(Scanner scanner, String label) {
