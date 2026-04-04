@@ -77,7 +77,6 @@ public abstract class Combatant {
     public int getHp() {
         return hp;
     }
-
     // -----------------------------
     // Status Effect Support
     // -----------------------------

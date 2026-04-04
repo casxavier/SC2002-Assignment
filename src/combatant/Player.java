@@ -20,6 +20,12 @@ public abstract class Player extends Combatant {
         this.hasPowerStoneCharge = false;
     }
 
+    public int getMaxHp(){// get max HP of player
+        return maxHp;
+    }
+    public int getSmokeTurns(){// get number of turns remaining if smoked
+        return smokeTurns;
+    }
     public void heal(int amount) {
         if (amount <= 0) {
             return;
