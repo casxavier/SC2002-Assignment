@@ -269,25 +269,26 @@ public class Gameflow {
 
     
     private List<Combatant> spawnInitialEnemy() { 
+        List <Combatant> enemyList  = new ArrayList<>();
         switch (gameSettings.getDifficulty()) {
 
             case EASY: 
-                enemies.add(new Goblin());
-                enemies.add(new Goblin());
-                enemies.add(new Goblin());
+                enemyList.add(new Goblin());
+                enemyList.add(new Goblin());
+                enemyList.add(new Goblin());
                 break;
             case MEDIUM:
-                enemies.add(new Goblin());
-                enemies.add(new Wolf());
+                enemyList.add(new Goblin());
+                enemyList.add(new Wolf());
                 break;
             case HARD:
-                enemies.add(new Goblin());
-                enemies.add(new Goblin());
+                enemyList.add(new Goblin());
+                enemyList.add(new Goblin());
                 break;
             default:
                 break;
         }
-        return enemies;
+        return enemyList;
     }
 
     private void spawnBackupWave() {
