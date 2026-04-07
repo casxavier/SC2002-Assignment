@@ -31,10 +31,36 @@ public class Gameflow {
         this.turnOrderStrategy = turnOrderStrategy;
     }
 
-    
-    public void initializeGame() {
-        Scanner sc = new Scanner(System.in);
+    private static Item promptItem(Scanner scanner, String label) {
+        while (true) {
+            System.out.print(label + " (1-3): ");
+            String line = scanner.nextLine().trim();
+            int n;
+            try {
+                n = Integer.parseInt(line);
+            } catch (NumberFormatException e) {
+                System.out.println("Enter 1, 2, or 3.");
+                continue;
+            }
+            switch (n) {
+                case 1:
+                    return new Potion();
+                case 2:
+                    return new PowerStone();
+                case 3:
+                    return new SmokeBomb();
+                default:
+                    System.out.println("Enter 1, 2, or 3.");
+            }
+        }
+    }
+        
+    public static Gameflow initializeGame(Scanner sc) {
         int choice = 0;
+        boolean validChar = false;
+        boolean validDiff = false;
+        Player player = null;
+
         System.out.println("First, select your character class: ");
         System.out.println("1. Warrior");
         System.out.println("HP: 260");
@@ -52,45 +78,57 @@ public class Gameflow {
         System.out.println(
                 "Special Skill: Arcane Blast - Deal basic attack damage to all enemies. Each enemy defeated by Arcane Blast adds 10 to the Wizard's attack, lasting until the end of the level.");
         System.out.println("------------------------------");
-        System.out.print("Select Character Class (1 or 2): ");
-        choice = sc.nextInt();
-        while (choice < 1 || choice > 2) {
-            System.err.println("Invalid choice. Please select 1 or 2.");
-            System.out.print("Select Character Class (1 or 2): ");
-            choice = sc.nextInt();
+
+        while(!validChar){
+            try{
+                System.out.print("Select Character Class (1 or 2): ");
+                choice = Integer.parseInt(sc.nextLine().trim()); 
+                if (choice < 1 || choice > 2){
+                    throw new IllegalArgumentException("Invalid choice. Please select 1 or 2.");
+                }
+                validChar = true; 
+            }catch(NumberFormatException e){
+                System.err.println("Please enter a valid integer (1 or 2).");
+            }catch(IllegalArgumentException e){
+                System.err.println(e.getMessage());
+            }
         }
 
         
         switch (choice) {
             case 1:
-                gameSettings.setPlayer(new Warrior("Warrior"));
+                player = new Warrior("Warrior");
                 break;
             case 2:
-                gameSettings.setPlayer(new Warrior("Wizard"));
+                player = new Wizard("Wizard");
                 break;
             default:
-                gameSettings.setPlayer(new Warrior("Warrior"));
-                break;
+                player = new Warrior("Warrior");
         }
         System.out.println();
 
         
+        int chosenDifficulty = 0;
         System.out.println("Next, select your difficulty: ");
         System.out.println("1. Easy");
         System.out.println("2. Medium");
         System.out.println("3. Hard");
-        System.out.print("Select Difficulty: ");
-        int chosenDifficulty = sc.nextInt();
-        while (chosenDifficulty < 1 || chosenDifficulty > 3) {
-            System.err.println("Invalid choice. Please select 1, 2 or 3.");
-            System.out.print("Select Difficulty: ");
-            chosenDifficulty = sc.nextInt();
+
+        while(!validDiff){
+            try{
+                System.out.print("Select Difficulty: ");
+                chosenDifficulty = Integer.parseInt(sc.nextLine().trim()); 
+                if (chosenDifficulty <1 || chosenDifficulty >3){
+                    throw new IllegalArgumentException("Invalid choice. Please select 1, 2 or 3.");
+                }
+                validDiff = true;
+            }catch (NumberFormatException e){
+                System.err.println("Invalid choice. Please enter a number.");
+            }catch (IllegalArgumentException e){
+                System.err.println(e.getMessage());
+            }
         }
-
-        System.out.printf("You are about to start as a %s on %s mode. Good luck!\n\n",
-                gameSettings.getPlayer().getName(),
-                chosenDifficulty == 1 ? "easy" : chosenDifficulty == 2 ? "medium" : "hard");
-
+        gameSettings = new GameSettings(null, player);
         switch (chosenDifficulty) {
             case 1:
                 gameSettings.setDifficulty(Difficulty.EASY);
@@ -105,12 +143,21 @@ public class Gameflow {
                 gameSettings.setDifficulty(Difficulty.EASY);
                 break;
         }
-        sc.close();
+
+        System.out.println("Choose two single-use items (duplicates allowed):");
+        System.out.println("1. Potion — Heal 100 HP");
+        System.out.println("2. Power Stone — One free special skill use");
+        System.out.println("3. Smoke Bomb — Enemies deal 0 damage this turn and next");
+        player.addItem(promptItem(sc, "First item"));
+        player.addItem(promptItem(sc, "Second item"));
+        System.out.println();
+
+        Gameflow newGame = new Gameflow(player, gameSettings.getDifficulty(), new OrderBySpeed());
+        return newGame;
     }
 
     
-    public void executeGameLoop() {
-        Scanner sc = new Scanner(System.in);
+    public void executeGameLoop(Scanner sc) {
 
         
         List<Combatant> orderedCombatants = getOrder();
@@ -128,7 +175,7 @@ public class Gameflow {
 
             
             currentTurn = new Turn(turnCount, player, enemies, orderedCombatants);
-            currentTurn.executeTurn();
+            currentTurn.executeTurn(sc);
 
             
             for (int i = 0; i < enemies.size(); i++) {
@@ -162,7 +209,6 @@ public class Gameflow {
             ((Wizard) gameSettings.getPlayer()).resetArcaneBlastBonus();
         }
         gameCompletion();
-        sc.close();
     }
 
     
@@ -218,7 +264,7 @@ public class Gameflow {
     
     public void printTurnOrder(List<Combatant> oCombatants) {
         System.out.println("Turn Order:");
-        for (int i = 1; i <= oCombatants.size(); i++) {
+        for (int i = 1; i <oCombatants.size()-1; i++) {
             System.out.printf("%d. %s (Speed: %d)\n", i, oCombatants.get(i).getName(), oCombatants.get(i).getSpeed());
         }
     }
@@ -251,11 +297,11 @@ public class Gameflow {
 
         switch (choice) {
             case 1:
-                executeGameLoop();
+                executeGameLoop(sc);
                 break;
             case 2:
-                initializeGame();
-                executeGameLoop();
+                initializeGame(sc);
+                executeGameLoop(sc);
                 break;
             case 3:
                 System.out.println("Thanks for playing. Goodbye!");
@@ -321,4 +367,80 @@ public class Gameflow {
                 gameSettings.getPlayer().getSpecialSkillCooldown(), gameSettings.getPlayer().canUseSpecialSkill());
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

@@ -22,11 +22,10 @@ public class Turn {
         this.turnOrder = turnOrder;
     }
 
-    public void executeTurn() {
+    public void executeTurn(Scanner sc) {
         while (true) {
-            Scanner sc = new Scanner(System.in);
             
-            System.out.println("Choose action:");
+            System.out.println("\nChoose action:");
             System.out.println("1. Basic Attack");
             System.out.println("2. Defend");
             System.out.println("3. Use Item");
@@ -186,7 +185,6 @@ public class Turn {
                         }
                     }
                 }
-                sc.close();
             }
 
         }
