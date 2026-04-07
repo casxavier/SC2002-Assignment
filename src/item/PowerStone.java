@@ -14,9 +14,9 @@ public class PowerStone extends Item {
     }
 
     @Override
-    public String use(Player target) {
-        target.grantPowerStoneCharge();
-        return target.getName() + " gained one free special skill use.";
+    public String use(Player user) {
+        user.grantPowerStoneCharge();
+        return null;
     }
 
     @Override
@@ -26,8 +26,6 @@ public class PowerStone extends Item {
                 return "Power Stone requires a living enemy target.";
             }
         }
-
-        user.grantPowerStoneCharge();
 
         ActionResult skillResult = PlayerSpecialSkills.forPlayer(user).execute(user, ctx, target);
 
