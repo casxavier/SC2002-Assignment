@@ -39,7 +39,7 @@ public class ItemAction extends Action {
         }
         Item item = player.getInventory().get(itemIndex);
         String msg = item.use(player);
-        if (item instanceof PowerStone) {
+        if (item.requiresTarget()) {
             msg = item.useWithTarget(player, ctx, powerStoneTarget);
         }
         player.removeItem(item);
