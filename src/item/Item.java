@@ -1,6 +1,9 @@
 package item;
 
+import java.util.Optional;
 import combatant.Player;
+import combatant.Combatant;
+import action.BattleContext;
 
 public abstract class Item {
     protected String name;
@@ -13,5 +16,13 @@ public abstract class Item {
         return name;
     }
 
-    public abstract String use(Player target);
+    public abstract String use(Player user);
+
+    public String useWithTarget(Player user, BattleContext ctx, Combatant target) {
+        return "This item does not support targeting.";
+    }
+
+    public boolean requiresTarget() {
+        return false;
+    }
 }

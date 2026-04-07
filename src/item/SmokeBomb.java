@@ -9,8 +9,8 @@ public class SmokeBomb extends Item {
     }
 
     @Override
-    public String use(Player target) {
-        target.applySmokeBomb();
-        return target.getName() + " is protected by smoke (2 turns)";
+    public String use(Player user)  {
+        user.applySmokeBomb();
+        return user.getName() + " is protected by smoke (2 turns)";
     }
 }

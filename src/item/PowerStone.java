@@ -1,6 +1,11 @@
 package item;
 
+import combatant.Combatant;
 import combatant.Player;
+import combatant.Warrior;
+import action.BattleContext;
+import action.PlayerSpecialSkills;
+import action.ActionResult;
 
 public class PowerStone extends Item {
 
@@ -12,5 +17,29 @@ public class PowerStone extends Item {
     public String use(Player target) {
         target.grantPowerStoneCharge();
         return target.getName() + " gained one free special skill use.";
+    }
+
+    @Override
+    public String useWithTarget(Player user, BattleContext ctx, Combatant target) {
+        if (user instanceof Warrior) {
+            if (target == null || !target.isAlive()) {
+                return "Power Stone requires a living enemy target.";
+            }
+        }
+
+        user.grantPowerStoneCharge();
+
+        ActionResult skillResult = PlayerSpecialSkills.forPlayer(user).execute(user, ctx, target);
+
+        if (!skillResult.isSuccess()) {
+            return user.getName() + " used Power Stone. " + skillResult.getMessage();
+        }
+
+        return user.getName() + " used Power Stone. " + skillResult.getMessage();
+    }
+
+    @Override
+    public boolean requiresTarget() {
+        return true;
     }
 }

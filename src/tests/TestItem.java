@@ -1,3 +1,5 @@
+package tests;
+
 import combatant.*;
 import item.*;
 

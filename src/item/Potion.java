@@ -9,11 +9,11 @@ public class Potion extends Item {
     }
 
     @Override
-    public String use(Player target) {
-        int before = target.getHp();
-        target.heal(100);
-        int after = target.getHp();
+    public String use(Player user) {
+        int before = user.getHp();
+        user.heal(100);
+        int after = user.getHp();
 
-        return target.getName() + " healed from " + before + " to " + after;
+        return user.getName() + " healed from " + before + " to " + after;
     }
 }

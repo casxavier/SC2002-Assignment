@@ -38,17 +38,9 @@ public class ItemAction extends Action {
             return ActionResult.fail("Invalid item selection.");
         }
         Item item = player.getInventory().get(itemIndex);
-        if (item instanceof PowerStone && player instanceof Warrior
-                && (powerStoneTarget == null || !powerStoneTarget.isAlive())) {
-            return ActionResult.fail("Power Stone requires a living enemy target.");
-        }
         String msg = item.use(player);
         if (item instanceof PowerStone) {
-            ActionResult skillResult = PlayerSpecialSkills.forPlayer(player).execute(player, ctx, powerStoneTarget);
-            if (!skillResult.isSuccess()) {
-                return ActionResult.fail(msg + " " + skillResult.getMessage());
-            }
-            msg = msg + " " + skillResult.getMessage();
+            msg = item.useWithTarget(player, ctx, powerStoneTarget);
         }
         player.removeItem(item);
         return ActionResult.ok(msg);
