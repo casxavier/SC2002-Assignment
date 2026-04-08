@@ -48,12 +48,12 @@ public class Turn {
                         System.out.println("No enemies to attack.");
                         continue;
                     }
-                    System.out.println("Targets:");
+                    System.out.println("\nTargets:");
                     for (int i = 0; i < enemies.size(); i++) {
                         System.out.printf("  %d. %s (HP %d)\n", i + 1, enemies.get(i).getName(),
                                 enemies.get(i).getHp());
                     }
-                    System.out.print("Select target (1-" + enemies.size() + "): ");
+                    System.out.println("Select target (1-" + enemies.size() + "): ");
                     int targetIndex;
                     try {
                         targetIndex = Integer.parseInt(sc.nextLine().trim()) - 1;
@@ -186,7 +186,7 @@ public class Turn {
                     }
                 }
             }
-
+        break;
         }
     }
 

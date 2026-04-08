@@ -144,7 +144,7 @@ public class Gameflow {
                 break;
         }
 
-        System.out.println("Choose two single-use items (duplicates allowed):");
+        System.out.println("\nChoose two single-use items (duplicates allowed):");
         System.out.println("1. Potion — Heal 100 HP");
         System.out.println("2. Power Stone — One free special skill use");
         System.out.println("3. Smoke Bomb — Enemies deal 0 damage this turn and next");
@@ -178,6 +178,10 @@ public class Gameflow {
             currentTurn.executeTurn(sc);
 
             
+            if(!player.isAlive()){
+                break;
+            }
+            
             for (int i = 0; i < enemies.size(); i++) {
                 if (!enemies.get(i).isAlive()) {
                     deadEnemies.add(enemies.get(i));
@@ -208,7 +212,7 @@ public class Gameflow {
         if (gameSettings.getPlayer() instanceof Wizard) {
             ((Wizard) gameSettings.getPlayer()).resetArcaneBlastBonus();
         }
-        gameCompletion();
+        gameCompletion(sc);
     }
 
     
@@ -270,10 +274,9 @@ public class Gameflow {
     }
 
     
-    public void gameCompletion() {
+    public void gameCompletion(Scanner sc) {
         
         
-        Scanner sc = new Scanner(System.in);
         String gameResult = won ? "Victory" : "Defeat";
         System.out.println(gameResult);
         if (won) {
@@ -319,17 +322,17 @@ public class Gameflow {
         switch (gameSettings.getDifficulty()) {
 
             case EASY: 
-                enemyList.add(new Goblin());
-                enemyList.add(new Goblin());
-                enemyList.add(new Goblin());
+                enemyList.add(new Goblin("Goblin A"));
+                enemyList.add(new Goblin("Goblin B"));
+                enemyList.add(new Goblin("Goblin C"));
                 break;
             case MEDIUM:
-                enemyList.add(new Goblin());
-                enemyList.add(new Wolf());
+                enemyList.add(new Goblin("Goblin A"));
+                enemyList.add(new Wolf("Wolf A"));
                 break;
             case HARD:
-                enemyList.add(new Goblin());
-                enemyList.add(new Goblin());
+                enemyList.add(new Goblin("Goblin A"));
+                enemyList.add(new Goblin("Goblin B"));
                 break;
             default:
                 break;
@@ -340,15 +343,15 @@ public class Gameflow {
     private void spawnBackupWave() {
         switch (gameSettings.getDifficulty()) {
             case MEDIUM:
-                enemies.add(new Wolf());
-                enemies.add(new Wolf());
-                System.out.println("Backup wave: 2 Wolves entered the arena!");
+                enemies.add(new Wolf("Wolf A"));
+                enemies.add(new Wolf("Wolf B"));
+                System.out.println("Backup Spawn Triggered! 2 Wolves (HP: 40) entered the arena!");
                 break;
             case HARD:
-                enemies.add(new Goblin());
-                enemies.add(new Wolf());
-                enemies.add(new Wolf());
-                System.out.println("Backup wave: 1 Goblin and 2 Wolves entered the arena!");
+                enemies.add(new Goblin("Goblin A"));
+                enemies.add(new Wolf("Wolf A"));
+                enemies.add(new Wolf("Wolf B"));
+                System.out.println("Backup Spawn Triggered! 1 Goblin (HP: 55) and 2 Wolves (HP: 40) entered the arena!");
                 break;
             default:
                 break;
