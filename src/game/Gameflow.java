@@ -31,10 +31,10 @@ public class Gameflow {
         this.turnOrderStrategy = turnOrderStrategy;
     }
 
-    private static Item promptItem(Scanner scanner, String label) {
+    private static Item promptItem(Scanner sc, String label) {
         while (true) {
             System.out.print(label + " (1-3): ");
-            String line = scanner.nextLine().trim();
+            String line = sc.nextLine().trim();
             int n;
             try {
                 n = Integer.parseInt(line);

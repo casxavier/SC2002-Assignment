@@ -1,6 +1,5 @@
 package item;
 
-import java.util.Optional;
 import combatant.Player;
 import combatant.Combatant;
 import action.BattleContext;

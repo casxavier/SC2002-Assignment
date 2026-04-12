@@ -1,12 +1,4 @@
-import combatant.*;
 import game.Gameflow;
-import game.Gameflow.Difficulty;
-import game.OrderBySpeed;
-import item.Item;
-import item.Potion;
-import item.PowerStone;
-import item.SmokeBomb;
-
 import java.util.Scanner;
 
 public class Main {
