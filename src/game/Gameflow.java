@@ -1,5 +1,6 @@
 package game;
 
+import action.ArcaneBlastSkill;
 import combatant.*;
 import item.*;
 
@@ -40,7 +41,12 @@ public class Gameflow {
         choice = GameUI.promptCharacterChoice(sc);
 
         
-        player = GameUI.createSelectedPlayer(choice);
+        switch (choice) {
+            case 1:
+                player = new Warrior("Warrior");
+            case 2:
+                player = new Wizard("Wizard");
+        }
         GameUI.printBlankLine();
 
         
@@ -112,23 +118,20 @@ public class Gameflow {
             }
 
             
+            printRoundSummary();
+            GameUI.waitBetweenRounds();
+            turnCount++;
+            history.add(currentTurn);
+
+            
             if (enemies.isEmpty()) {
                 won = true;
                 break;
             }
 
-            
-            printRoundSummary();
-            GameUI.waitBetweenRounds();
-            turnCount++;
-            history.add(currentTurn);
             orderedCombatants = getOrder();
         }
 
-        
-        if (gameSettings.getPlayer() instanceof Wizard) {
-            ((Wizard) gameSettings.getPlayer()).resetArcaneBlastBonus();
-        }
         gameCompletion(sc);
     }
 

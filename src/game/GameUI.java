@@ -110,17 +110,6 @@ public final class GameUI {
         }
     }
 
-    static Player createSelectedPlayer(int choice) {
-        switch (choice) {
-            case 1:
-                return new Warrior("Warrior");
-            case 2:
-                return new Wizard("Wizard");
-            default:
-                return new Warrior("Warrior");
-        }
-    }
-
     static void showDifficultySelection() {
         System.out.println();
         System.out.println("======================================");
@@ -441,17 +430,6 @@ public final class GameUI {
 
     static void printNoValidTargetsForShieldBash() {
         System.out.println("No valid targets available for Shield Bash.");
-    }
-
-    static String formatTurnSummary(int turnNum, Combatant actor, boolean isStunned, String targetName, int dealtDamage) {
-        if (isStunned) {
-            return String.format("Turn %d: %s was stunned and could not act.%n", turnNum, actor.getName());
-        }
-        if ("ALL".equals(targetName)) {
-            return String.format("Turn %d: %s used Arcane Blast.%n", turnNum, actor.getName());
-        }
-        return String.format("Turn %d: %s dealt %d damage (%d - %d def) to %s.%n",
-                turnNum, actor.getName(), dealtDamage, actor.getAttack(), actor.getAttack() - dealtDamage, targetName);
     }
 
     static void printInvalidChoice() {

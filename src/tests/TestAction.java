@@ -354,8 +354,6 @@ public class TestAction {
         check("Message mentions Arcane Blast",      result.getMessage().contains("Arcane Blast"));
         check("Kill count == 1 in message",         result.getMessage().contains("1"));
         check("Wizard cooldown set to 3",           wizard.getSpecialSkillCooldown() == 3);
-        
-        check("Wizard attack bonus applied (+10)",  wizard.getArcaneBlastBonus() == 10);
         check("Wizard effective attack == 60",      wizard.getAttack() == 60);
     }
 
@@ -511,7 +509,7 @@ public class TestAction {
         check("Wolf defeated",                 !wolf.isAlive());
         check("Pre-dead Goblin still HP == 0", deadGoblin.getHp() == 0);
         check("Kill count correct (wolf)",     result.getMessage().contains("1"));
-        check("Attack bonus == 10 (+10/kill)", wizard.getArcaneBlastBonus() == 10);
+        check("Attack bonus == 10 (+10/kill)", ArcaneBlastEffect.getOn(wizard).getAttackModifier() == 10);
         check("canUse() false after use",      !ArcaneBlastSkill.INSTANCE.canUse(wizard));
 
         
@@ -520,7 +518,7 @@ public class TestAction {
         Wolf w2 = new Wolf(); 
         BattleContext ctx2 = ctx(wizard2, w1, w2);
         ArcaneBlastSkill.INSTANCE.execute(wizard2, ctx2, null);
-        check("2 kills → +20 bonus",           wizard2.getArcaneBlastBonus() == 20);
+        check("2 kills → +20 bonus",           ArcaneBlastEffect.getOn(wizard2).getAttackModifier()  == 20);
 
         
         Warrior warrior = new Warrior("NonWizard");

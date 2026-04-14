@@ -10,7 +10,7 @@ import action.ActionResult;
 public class PowerStone extends Item {
 
     public PowerStone() {
-        super("PowerStone");
+        super("Power Stone");
     }
 
     @Override

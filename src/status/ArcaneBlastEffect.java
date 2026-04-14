@@ -31,13 +31,6 @@ public class ArcaneBlastEffect implements StatusEffect {
     
 
 
-    public int getTotalBonus() {
-        return totalBonus;
-    }
-
-    
-
-
     public void clear() {
         totalBonus = 0;
     }

@@ -6,6 +6,7 @@ import java.util.List;
 import combatant.Combatant;
 import combatant.Player;
 import combatant.Wizard;
+import status.ArcaneBlastEffect;
 
 
 
@@ -51,10 +52,29 @@ public final class ArcaneBlastSkill implements SpecialSkill {
                 kills++;
             }
         }
-        wizard.registerArcaneBlastDefeats(kills);
+        registerArcaneBlastDefeats(wizard, kills);
         wizard.consumeSpecialSkillUse();
         return ActionResult.ok(String.format(
                 "%s used Arcane Blast (kills this blast: %d).%n%s",
                 wizard.getName(), kills, detail));
+    }
+
+    
+
+
+
+
+
+
+    public static void registerArcaneBlastDefeats(Wizard wizard, int enemiesDefeated) {
+        if (enemiesDefeated <= 0) {
+            return;
+        }
+        ArcaneBlastEffect effect = ArcaneBlastEffect.getOn(wizard);
+        if (effect == null) {
+            effect = new ArcaneBlastEffect();
+            wizard.addStatusEffect(effect);
+        }
+        effect.addKills(enemiesDefeated);
     }
 }

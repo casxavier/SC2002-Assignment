@@ -6,7 +6,7 @@ import status.SmokeBombEffect;
 public class SmokeBomb extends Item {
 
     public SmokeBomb() {
-        super("SmokeBomb");
+        super("Smoke Bomb");
     }
 
     @Override
