@@ -7,7 +7,7 @@ import java.util.Collections;
 
 public abstract class Player extends Combatant {
     protected int maxHp;
-    protected int smokeTurns = 0;
+
     protected List<Item> inventory = new ArrayList<>();
     private int specialSkillCooldown;
     private final int defaultSpecialSkillCooldown = 3;
@@ -23,9 +23,7 @@ public abstract class Player extends Combatant {
     public int getMaxHp(){
         return maxHp;
     }
-    public int getSmokeTurns(){
-        return smokeTurns;
-    }
+
     public void heal(int amount) {
         if (amount <= 0) {
             return;
@@ -44,9 +42,6 @@ public abstract class Player extends Combatant {
 
     @Override
     public void onTurnStart() {
-        if (smokeTurns > 0) {
-            smokeTurns--;
-        }
         super.onTurnStart();
         
         if (canAct() && specialSkillCooldown > 0) {
@@ -96,12 +91,17 @@ public abstract class Player extends Combatant {
 
     
 
-    public void applySmokeBomb() {
-        smokeTurns = 2;
+    public boolean isSmokeActive() {
+        return hasStatusEffect(status.SmokeBombEffect.class);
     }
 
-    public boolean isSmokeActive() {
-        return smokeTurns > 0;
+    public int getSmokeTurns(){
+        for (status.StatusEffect effect : getStatusEffects()) {
+            if (effect instanceof status.SmokeBombEffect) {
+                return ((status.SmokeBombEffect) effect).getRemainingTurns();
+            }
+        }
+        return 0;
     }
 
     

@@ -1,6 +1,7 @@
 package item;
 
 import combatant.Player;
+import status.SmokeBombEffect;
 
 public class SmokeBomb extends Item {
 
@@ -10,7 +11,8 @@ public class SmokeBomb extends Item {
 
     @Override
     public String use(Player user)  {
-        user.applySmokeBomb();
+        user.removeStatusEffect(SmokeBombEffect.class);
+        user.addStatusEffect(new SmokeBombEffect());
         return user.getName() + " is protected by smoke (2 turns)";
     }
 }
