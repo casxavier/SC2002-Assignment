@@ -43,7 +43,6 @@ public abstract class Player extends Combatant {
     @Override
     public void onTurnStart() {
         super.onTurnStart();
-        
         if (canAct() && specialSkillCooldown > 0) {
             specialSkillCooldown--;
         }
@@ -59,7 +58,7 @@ public abstract class Player extends Combatant {
         if (hasPowerStoneCharge) {
             hasPowerStoneCharge = false;
         } else {
-            specialSkillCooldown = defaultSpecialSkillCooldown;
+            specialSkillCooldown = defaultSpecialSkillCooldown - 1;
         }
     }
 

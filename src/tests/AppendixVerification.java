@@ -54,14 +54,13 @@ public final class AppendixVerification {
         assert g.canAct();
     }
 
-    
     private static void verifyPowerStoneLeavesCooldown() {
         Warrior w = new Warrior("Warrior");
         Goblin g = new Goblin();
         ShieldBashSkill.INSTANCE.execute(w, new BattleContext(w, new ArrayList<>(List.of(g))), g);
-        assert w.getSpecialSkillCooldown() == 3;
+        assert w.getSpecialSkillCooldown() == 2;
         new PowerStone().use(w);
         ShieldBashSkill.INSTANCE.execute(w, new BattleContext(w, new ArrayList<>(List.of(g))), g);
-        assert w.getSpecialSkillCooldown() == 3;
+        assert w.getSpecialSkillCooldown() == 2;
     }
 }
