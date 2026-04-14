@@ -27,12 +27,12 @@ From the project root directory:
 mkdir -p out
 
 javac -d out src/Main.java \
-src/game/*.java \
-src/ui/*.java \
-src/combatant/*.java \
-src/action/*.java \
-src/item/*.java \
-src/statuseffect/*.java
+          src/game/*.java \
+          src/combatant/*.java \
+          src/action/*.java \
+          src/item/*.java \
+          src/status/*.java \
+          src/tests/*.java
 ```
 
 ---

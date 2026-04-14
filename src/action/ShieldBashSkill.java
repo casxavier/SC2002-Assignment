@@ -30,7 +30,7 @@ public final class ShieldBashSkill implements SpecialSkill {
         singleTarget.addStatusEffect(new Stun());
         player.consumeSpecialSkillUse();
         return ActionResult.ok(String.format(
-                "%s used Shield Bash on %s for %d damage (target stunned).",
-                player.getName(), singleTarget.getName(), dealt));
+                "%s used Shield Bash on %s for %d damage (%d - %d defense, target stunned).",
+                player.getName(), singleTarget.getName(), dealt, player.getAttack(), player.getAttack() - dealt));
     }
 }

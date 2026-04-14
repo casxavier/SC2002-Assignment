@@ -12,8 +12,7 @@ public class Turn {
     private final Player player;
     private final List<Combatant> enemies;
     private final List<Combatant> turnOrder;
-    private String targetName = "";
-    private boolean isStunned;
+
 
     public Turn(int turnNum, Player player, List<Combatant> enemies, List<Combatant> turnOrder) {
         this.turnNum = turnNum;
@@ -23,19 +22,10 @@ public class Turn {
     }
 
     public void executeTurn(Scanner sc) {
+        player.onTurnStart();
         while (true) {
-            
-            System.out.println("\nChoose action:");
-            System.out.println("1. Basic Attack");
-            System.out.println("2. Defend");
-            System.out.println("3. Use Item");
-            System.out.println("4. Special Skill");
-            System.out.print("Enter choice (1-4): ");
-            int choice;
-            try {
-                choice = Integer.parseInt(sc.nextLine().trim());
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input!");
+            int choice = GameUI.promptTurnActionChoice(sc);
+            if (choice == -1) {
                 continue;
             }
 
@@ -45,29 +35,16 @@ public class Turn {
             switch (choice) {
                 case 1:
                     if (enemies.isEmpty()) {
-                        System.out.println("No enemies to attack.");
+                        GameUI.printNoEnemiesToAttack();
                         continue;
                     }
-                    System.out.println("\nTargets:");
-                    for (int i = 0; i < enemies.size(); i++) {
-                        System.out.printf("  %d. %s (HP %d)\n", i + 1, enemies.get(i).getName(),
-                                enemies.get(i).getHp());
-                    }
-                    System.out.println("Select target (1-" + enemies.size() + "): ");
-                    int targetIndex;
-                    try {
-                        targetIndex = Integer.parseInt(sc.nextLine().trim()) - 1;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Invalid input!");
-                        continue;
-                    }
+                    GameUI.printCombatantTargets("\nTargets:", enemies, true);
+                    int targetIndex = GameUI.promptAttackTargetIndex(sc, enemies.size());
                     if (targetIndex < 0 || targetIndex >= enemies.size()) {
-                        System.out.println("Invalid target!");
                         continue;
                     }
 
                     target = enemies.get(targetIndex);
-                    targetName = target.getName();
                     action = new BasicAttackAction(player, target);
                     break;
 
@@ -78,86 +55,49 @@ public class Turn {
                 case 3:
                     List<Item> inventory = player.getInventory();
                     if (inventory.isEmpty()) {
-                        System.out.println("No items in inventory.");
+                        GameUI.printNoItemsInInventory();
                         continue;
                     }
-                    System.out.println("Inventory:");
-                    for (int i = 0; i < inventory.size(); i++) {
-                        System.out.printf("  %d. %s\n", i + 1, inventory.get(i).getName());
-                    }
-                    System.out.print("Select item (1-" + inventory.size() + "): ");
-                    int itemIndex;
-                    try {
-                        itemIndex = Integer.parseInt(sc.nextLine().trim()) - 1;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Invalid input!");
-                        continue;
-                    }
+                    GameUI.printInventory(inventory);
+                    int itemIndex = GameUI.promptInventoryChoice(sc, inventory.size());
                     if (itemIndex < 0 || itemIndex >= inventory.size()) {
-                        System.out.println("Invalid item!");
                         continue;
                     }
                     if (inventory.get(itemIndex) instanceof PowerStone && player instanceof Warrior) {
                         if (enemies.isEmpty()) {
-                            System.out.println("No valid targets for Shield Bash.");
+                            GameUI.printNoValidTargetsForShieldBash();
                             continue;
                         }
-                        System.out.println("Targets for Shield Bash:");
-                        for (int i = 0; i < enemies.size(); i++) {
-                            System.out.printf("  %d. %s\n", i + 1, enemies.get(i).getName());
-                        }
-                        System.out.print("Select target (1-" + enemies.size() + "): ");
-                        try {
-                            int t = Integer.parseInt(sc.nextLine().trim()) - 1;
-                            if (t < 0 || t >= enemies.size()) {
-                                System.out.println("Invalid target.");
-                                continue;
-                            }
-                            target = enemies.get(t);
-                            targetName = target.getName();
-                        } catch (NumberFormatException ex) {
-                            System.out.println("Invalid target.");
+                        GameUI.printCombatantTargets("Targets for Shield Bash:", enemies, false);
+                        int t = GameUI.promptShieldBashTargetIndex(sc, enemies.size());
+                        if (t < 0 || t >= enemies.size()) {
                             continue;
                         }
+                        target = enemies.get(t);
+
                     }
-                    if (inventory.get(itemIndex) instanceof PowerStone && player instanceof Wizard) {
-                        targetName = "ALL";
-                    }
+
                     action = new ItemAction(player, itemIndex, target);
                     break;
 
                 case 4:
                     if (player instanceof Warrior) {
                         if (enemies.isEmpty()) {
-                            System.out.println("No valid targets for Shield Bash.");
+                            GameUI.printNoValidTargetsForShieldBash();
                             continue;
                         }
-                        System.out.println("Targets for Shield Bash:");
-                        for (int i = 0; i < enemies.size(); i++) {
-                            System.out.printf("  %d. %s\n", i + 1, enemies.get(i).getName());
-                        }
-                        System.out.print("Select target (1-" + enemies.size() + "): ");
-                        try {
-                            int t = Integer.parseInt(sc.nextLine().trim()) - 1;
-                            if (t < 0 || t >= enemies.size()) {
-                                System.out.println("Invalid target.");
-                                continue;
-                            }
-                            target = enemies.get(t);
-                            targetName = target.getName();
-                        } catch (NumberFormatException ex) {
-                            System.out.println("Invalid target.");
+                        GameUI.printCombatantTargets("Targets for Shield Bash:", enemies, false);
+                        int t = GameUI.promptShieldBashTargetIndex(sc, enemies.size());
+                        if (t < 0 || t >= enemies.size()) {
                             continue;
                         }
-                    }
-                    if (player instanceof Wizard) {
-                        targetName = "ALL";
+                        target = enemies.get(t);
                     }
                     action = new SpecialSkillAction(player, target);
                     break;
 
                 default:
-                    System.out.println("Invalid choice!");
+                    GameUI.printInvalidChoice();
                     continue;
             }
 
@@ -165,41 +105,53 @@ public class Turn {
             for (int i = 0; i < turnOrder.size(); i++) {
                 Combatant c = turnOrder.get(i);
                 if (c.equals(player)) {
-                    if (!action.canExecute()) {
-                        System.out.println(action.blockedReason());
-                    } else {
-                        System.out.println(action.execute(new BattleContext(player, enemies)).getMessage());
-                        if (target != null) {
-                            System.out.println(printSummary(player));
-                        }
-                    }
-                } else {
-                    if (c.isAlive()) {
-                        Action enemyAction = new BasicAttackAction(c, player);
-                        if (!enemyAction.canExecute()) {
-                            System.out.println(enemyAction.blockedReason());
-                        } else {
-                            targetName = player.getName();
-                            System.out.println(enemyAction.execute(new BattleContext(player, enemies)).getMessage());
-                            System.out.println(printSummary(c));
-                        }
-                    }
+                    executeAndReport(action);
+                } else if (c.isAlive()) {
+                    c.onTurnStart();
+                    Action enemyAction = new BasicAttackAction(c, player);
+                    executeAndReport(enemyAction);
                 }
             }
-        break;
+            break;
         }
     }
 
-    
-    public String printSummary(Combatant actor) {
-        if (isStunned) { 
-            return String.format("Turn %d: %s was stunned, not able to act.\n", turnNum, actor.getName());
+    private void executeAndReport(Action action) {
+        if (!action.canExecute()) {
+            GameUI.printMessage(action.blockedReason());
+            GameUI.printBlankLine();
+            return;
         }
-        if (targetName.equals("ALL")) { 
-            return String.format("Turn %d: %s used arcane blast, all enemies dealt %d damage each.\n", turnNum,
-                    actor.getName(), actor.getAttack());
-        }
-        return String.format("Turn %d: %s dealt %d damage on %s.\n", turnNum, actor.getName(), actor.getAttack(),
-                targetName); 
+
+        BattleContext context = new BattleContext(player, enemies);
+        boolean playerWasAlive = player.isAlive();
+        boolean[] enemiesWereAlive = snapshotEnemyAliveStates();
+
+        GameUI.printMessage(action.execute(context).getMessage());
+        printDefeatMessages(playerWasAlive, enemiesWereAlive);
+
+        GameUI.printBlankLine();
+        GameUI.waitBetweenTurns();
     }
+
+    private boolean[] snapshotEnemyAliveStates() {
+        boolean[] enemiesWereAlive = new boolean[enemies.size()];
+        for (int j = 0; j < enemies.size(); j++) {
+            enemiesWereAlive[j] = enemies.get(j).isAlive();
+        }
+        return enemiesWereAlive;
+    }
+
+    private void printDefeatMessages(boolean playerWasAlive, boolean[] enemiesWereAlive) {
+        if (playerWasAlive && !player.isAlive()) {
+            GameUI.printDefeatMessage(player);
+        }
+        for (int j = 0; j < enemies.size(); j++) {
+            Combatant enemy = enemies.get(j);
+            if (enemiesWereAlive[j] && !enemy.isAlive()) {
+                GameUI.printDefeatMessage(enemy);
+            }
+        }
+    }
+
 }

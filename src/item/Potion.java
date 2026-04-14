@@ -14,6 +14,6 @@ public class Potion extends Item {
         user.heal(100);
         int after = user.getHp();
 
-        return user.getName() + " healed from " + before + " to " + after;
+        return user.getName() + " healed from " + before + " to " + after + ".";
     }
 }

@@ -30,9 +30,11 @@ public class BasicAttackAction extends Action {
 
     @Override
     public ActionResult execute(BattleContext ctx) {
-        int dealt = target.takeDamage(actor.getAttack());
+        int raw = actor.getAttack();
+        int dealt = target.takeDamage(raw);
+        int reduced = raw - dealt;
         return ActionResult.ok(String.format(
-                "%s attacks %s for %d damage (%s HP: %d).",
-                actor.getName(), target.getName(), dealt, target.getName(), target.getHp()));
+                "%s attacks %s for %d damage (%d - %d defense, %s HP: %d).",
+                actor.getName(), target.getName(), dealt, raw, reduced, target.getName(), target.getHp()));
     }
 }

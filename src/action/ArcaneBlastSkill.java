@@ -40,7 +40,13 @@ public final class ArcaneBlastSkill implements SpecialSkill {
             }
             boolean wasAlive = enemy.getHp() > 0;
             int dealt = enemy.takeDamage(atk);
-            detail.append(String.format("  %s took %d damage (HP: %d).%n", enemy.getName(), dealt, enemy.getHp()));
+            detail.append(String.format(
+                    "  %s took %d damage (%d - %d defense) (HP: %d).%n",
+                    enemy.getName(),
+                    dealt,
+                    atk,
+                    enemy.getDefense(),
+                    enemy.getHp()));
             if (wasAlive && !enemy.isAlive()) {
                 kills++;
             }
