@@ -24,6 +24,10 @@ public class Gameflow {
 
     
     public Gameflow(Combatant player, Difficulty difficulty, TurnOrderStrategy turnOrderStrategy) {
+        List<Item> preservedTemplate = null;
+        if (gameSettings != null && !gameSettings.getStartingItemTemplate().isEmpty()) {
+            preservedTemplate = new ArrayList<>(gameSettings.getStartingItemTemplate());
+        }
         gameSettings = new GameSettings(difficulty, (Player) player);
         this.enemies = spawnInitialEnemy();
         this.turnOrderStrategy = turnOrderStrategy;
@@ -73,6 +77,7 @@ public class Gameflow {
         GameUI.showItemSelection();
         player.addItem(promptItem(sc, "First item"));
         player.addItem(promptItem(sc, "Second item"));
+        gameSettings.setStartingItemTemplate(copyItemsAsNew(player.getInventory()));
         GameUI.printBlankLine();
 
         Gameflow newGame = new Gameflow(player, gameSettings.getDifficulty(), new OrderBySpeed());
@@ -179,15 +184,8 @@ public class Gameflow {
                     replayPlayer = new Warrior(currentPlayer.getName());
                 }
 
-                
-                for (Item item : currentPlayer.getInventory()) {
-                    if (item instanceof Potion) {
-                        replayPlayer.addItem(new Potion());
-                    } else if (item instanceof PowerStone) {
-                        replayPlayer.addItem(new PowerStone());
-                    } else if (item instanceof SmokeBomb) {
-                        replayPlayer.addItem(new SmokeBomb());
-                    }
+                for (Item item : copyItemsAsNew(gameSettings.getStartingItemTemplate())) {
+                    replayPlayer.addItem(item);
                 }
 
                 Gameflow replayGame = new Gameflow(replayPlayer, currentDifficulty, new OrderBySpeed());
@@ -251,5 +249,26 @@ public class Gameflow {
 
     private void printBattleState() {
         GameUI.printBattleState(gameSettings.getPlayer(), enemies);
+    }
+
+    private static List<Item> copyItemsAsNew(List<Item> inventory) {
+        List<Item> out = new ArrayList<>();
+        for (Item item : inventory) {
+            out.add(duplicateItem(item));
+        }
+        return out;
+    }
+
+    private static Item duplicateItem(Item item) {
+        if (item instanceof Potion) {
+            return new Potion();
+        }
+        if (item instanceof PowerStone) {
+            return new PowerStone();
+        }
+        if (item instanceof SmokeBomb) {
+            return new SmokeBomb();
+        }
+        throw new IllegalArgumentException("Unknown item type: " + item.getClass().getName());
     }
 }

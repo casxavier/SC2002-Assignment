@@ -99,6 +99,18 @@ public class Turn {
                     continue;
             }
 
+            if (action instanceof SpecialSkillAction) {
+                SpecialSkillAction special = (SpecialSkillAction) action;
+                if (!special.canExecute()
+                        && player.isAlive()
+                        && player.canAct()
+                        && !player.canUseSpecialSkill()) {
+                    GameUI.printMessage(special.blockedReason());
+                    GameUI.printBlankLine();
+                    continue;
+                }
+            }
+
             
             for (int i = 0; i < turnOrder.size(); i++) {
                 Combatant c = turnOrder.get(i);
