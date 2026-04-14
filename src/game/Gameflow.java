@@ -29,6 +29,11 @@ public class Gameflow {
             preservedTemplate = new ArrayList<>(gameSettings.getStartingItemTemplate());
         }
         gameSettings = new GameSettings(difficulty, (Player) player);
+        if (preservedTemplate != null && !preservedTemplate.isEmpty()) {
+            gameSettings.setStartingItemTemplate(preservedTemplate);
+        } else {
+            gameSettings.setStartingItemTemplate(copyItemsAsNew(((Player) player).getInventory()));
+        }
         this.enemies = spawnInitialEnemy();
         this.turnOrderStrategy = turnOrderStrategy;
     }
@@ -48,8 +53,10 @@ public class Gameflow {
         switch (choice) {
             case 1:
                 player = new Warrior("Warrior");
+                break;
             case 2:
                 player = new Wizard("Wizard");
+                break;
         }
         GameUI.printBlankLine();
 
