@@ -161,21 +161,47 @@ public class Gameflow {
         int choice = GameUI.promptEndGameChoice(sc);
 
         switch (choice) {
-            case 1:
-                executeGameLoop(sc);
-                break;
-            case 2:
-                initializeGame(sc);
-                executeGameLoop(sc);
-                break;
+            case 1: {
+                
+                Player currentPlayer = gameSettings.getPlayer();
+                Difficulty currentDifficulty = gameSettings.getDifficulty();
+
+                
+                Player replayPlayer;
+                if (currentPlayer instanceof Warrior) {
+                    replayPlayer = new Warrior(currentPlayer.getName());
+                } else if (currentPlayer instanceof Wizard) {
+                    replayPlayer = new Wizard(currentPlayer.getName());
+                } else {
+                    replayPlayer = new Warrior(currentPlayer.getName());
+                }
+
+                
+                for (Item item : currentPlayer.getInventory()) {
+                    if (item instanceof Potion) {
+                        replayPlayer.addItem(new Potion());
+                    } else if (item instanceof PowerStone) {
+                        replayPlayer.addItem(new PowerStone());
+                    } else if (item instanceof SmokeBomb) {
+                        replayPlayer.addItem(new SmokeBomb());
+                    }
+                }
+
+                Gameflow replayGame = new Gameflow(replayPlayer, currentDifficulty, new OrderBySpeed());
+                replayGame.executeGameLoop(sc);
+                return;
+            }
+            case 2: {
+                Gameflow newGame = initializeGame(sc);
+                newGame.executeGameLoop(sc);
+                return;
+            }
             case 3:
                 GameUI.printExitMessage();
-                System.exit(0);
-                break;
+                return;
             default:
                 break;
         }
-        sc.close();
     }
 
     

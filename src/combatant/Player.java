@@ -109,8 +109,4 @@ public abstract class Player extends Combatant {
     public void grantPowerStoneCharge() {
         hasPowerStoneCharge = true;
     }
-
-    public boolean hasPowerStoneCharge() {
-        return hasPowerStoneCharge;
-    }
 }

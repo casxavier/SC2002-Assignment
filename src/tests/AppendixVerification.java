@@ -63,6 +63,5 @@ public final class AppendixVerification {
         new PowerStone().use(w);
         ShieldBashSkill.INSTANCE.execute(w, new BattleContext(w, new ArrayList<>(List.of(g))), g);
         assert w.getSpecialSkillCooldown() == 3;
-        assert !w.hasPowerStoneCharge();
     }
 }

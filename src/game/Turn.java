@@ -8,14 +8,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Turn {
-    private final int turnNum;
     private final Player player;
     private final List<Combatant> enemies;
     private final List<Combatant> turnOrder;
 
 
     public Turn(int turnNum, Player player, List<Combatant> enemies, List<Combatant> turnOrder) {
-        this.turnNum = turnNum;
         this.player = player;
         this.enemies = enemies;
         this.turnOrder = turnOrder;

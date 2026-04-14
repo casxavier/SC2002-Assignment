@@ -18,8 +18,8 @@ import java.util.Scanner;
 public final class GameUI {
 
     
-    private static long TURN_DELAY_MS = 1000;
-    private static long ROUND_DELAY_MS = 3000;
+    private static long TURN_DELAY_MS = 500;
+    private static long ROUND_DELAY_MS = 1000;
 
     private static final String[] WARRIOR_ART = {
             "           !          /",
@@ -272,9 +272,9 @@ public final class GameUI {
 
     static void printTurnOrder(List<Combatant> orderedCombatants) {
         System.out.println("Turn Order:");
-        for (int i = 1; i < orderedCombatants.size() - 1; i++) {
+        for (int i = 0; i < orderedCombatants.size(); i++) {
             System.out.printf("%d. %s (Speed: %d)%n",
-                    i,
+                    i + 1,
                     orderedCombatants.get(i).getName(),
                     orderedCombatants.get(i).getSpeed());
         }
