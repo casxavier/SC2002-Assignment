@@ -395,6 +395,7 @@ public final class GameUI {
             String invalidInputMessage,
             String invalidChoiceMessage) {
         int targetIndex = promptMenuChoice(sc, prompt, 1, enemyCount, invalidInputMessage, invalidChoiceMessage);
+        System.out.println();
         return targetIndex == -1 ? -1 : targetIndex - 1;
     }
 
@@ -536,7 +537,9 @@ public final class GameUI {
             String[] art = getEnemyArt(enemy);
             String[] stats = {
                     enemy.getName(),
-                    "HP: " + enemy.getHp()
+                    "HP: " + enemy.getHp(),
+                    "ATK: " + enemy.getAttack() + " | DEF: " + enemy.getDefense(),
+                    "SPD: " + enemy.getSpeed()
             };
             enemyBlocks[i++] = buildCombatantBlock(art, stats, ENEMY_BLOCK_WIDTH);
         }
