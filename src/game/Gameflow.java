@@ -103,7 +103,6 @@ public class Gameflow {
 
             GameUI.printTurnHeader(turnCount);
 
-            printBattleState();
 
             
             currentTurn = new Turn(turnCount, player, enemies, orderedCombatants);
@@ -221,7 +220,7 @@ public class Gameflow {
         for (Map<String, String> config : backupConfig) {
             String type = config.get("type");
             String name = config.get("name");
-            Combatant enemy = createEnemy(type, name);
+            Enemy enemy = createEnemy(type, name);
             if (enemy != null) {
                 enemies.add(enemy);
             }
@@ -231,7 +230,7 @@ public class Gameflow {
         }
     }
 
-    private Combatant createEnemy(String type, String name) {
+    private Enemy createEnemy(String type, String name) {
         switch (type) {
             case "GOBLIN":
                 return new Goblin(name);
@@ -240,10 +239,6 @@ public class Gameflow {
             default:
                 return null;
         }
-    }
-
-    private void printBattleState() {
-        GameUI.printBattleState(gameSettings.getPlayer(), enemies);
     }
 
     private static List<Item> copyItemsAsNew(List<Item> inventory) {

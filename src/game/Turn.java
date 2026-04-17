@@ -20,6 +20,7 @@ public class Turn {
 
     public void executeTurn(Scanner sc) {
         player.onTurnStart();
+        GameUI.printBattleState(player, enemies);
         while (true) {
             int choice = GameUI.promptTurnActionChoice(sc);
 

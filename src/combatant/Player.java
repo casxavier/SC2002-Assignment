@@ -59,7 +59,7 @@ public abstract class Player extends Combatant {
         if (hasPowerStoneCharge) {
             hasPowerStoneCharge = false;
         } else {
-            specialSkillCooldown = defaultSpecialSkillCooldown - 1;
+            specialSkillCooldown = defaultSpecialSkillCooldown;
         }
     }
 
