@@ -5,8 +5,6 @@ import combatant.Player;
 import status.Stun;
 
 
-
-
 public final class ShieldBashSkill implements SpecialSkill {
 
     public static final ShieldBashSkill INSTANCE = new ShieldBashSkill();
@@ -16,6 +14,11 @@ public final class ShieldBashSkill implements SpecialSkill {
     @Override
     public boolean canUse(Player player) {
         return player.canUseSpecialSkill();
+    }
+
+    @Override
+    public boolean requiresTarget() {
+        return true;
     }
 
     @Override

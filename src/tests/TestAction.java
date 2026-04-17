@@ -9,12 +9,6 @@ import item.*;
 import status.*;
 
 
-
-
-
-
-
-
 public class TestAction {
 
     
@@ -223,7 +217,8 @@ public class TestAction {
         System.out.println("\n=== ItemAction – PowerStone (Warrior) ===");
 
         Warrior warrior = new Warrior("PSWarrior");
-        warrior.consumeSpecialSkillUse();
+        
+        warrior.consumeSpecialSkillUse(); 
         check("Pre-condition: special on cooldown", !warrior.canUseSpecialSkill());
 
         Goblin goblin = new Goblin();
@@ -243,7 +238,8 @@ public class TestAction {
         check("Goblin damaged (HP < 55)",           goblin.getHp() < 55);
         check("Goblin has Stun after Shield Bash",  goblin.hasStatusEffect(Stun.class));
         check("PowerStone removed from inventory",  warrior.getInventory().isEmpty());
-        check("Cooldown still 2 (stone charge used)", warrior.getSpecialSkillCooldown() == 2);
+        
+        check("Cooldown still 3 (stone charge used)", warrior.getSpecialSkillCooldown() == 3);
     }
 
     
@@ -252,7 +248,7 @@ public class TestAction {
         System.out.println("\n=== ItemAction – PowerStone (Wizard) ===");
 
         Wizard wizard = new Wizard("PSWizard");
-        wizard.consumeSpecialSkillUse();
+        wizard.consumeSpecialSkillUse(); 
         check("Pre-condition: special on cooldown", !wizard.canUseSpecialSkill());
 
         Goblin g1 = new Goblin();
@@ -323,7 +319,7 @@ public class TestAction {
         check("Goblin HP reduced",              goblin.getHp() < 55);
         check("Goblin has Stun",                goblin.hasStatusEffect(Stun.class));
         check("Message mentions Shield Bash",   result.getMessage().contains("Shield Bash"));
-        check("Warrior cooldown set to 2",      warrior.getSpecialSkillCooldown() == 2);
+        check("Warrior cooldown set to 3",      warrior.getSpecialSkillCooldown() == 3);
 
         
         SpecialSkillAction cooldownSsa = new SpecialSkillAction(warrior, goblin);
@@ -351,7 +347,7 @@ public class TestAction {
         check("Wolf defeated (50 - 5 = 45 ≥ 40)",  !wolf.isAlive());
         check("Message mentions Arcane Blast",      result.getMessage().contains("Arcane Blast"));
         check("Kill count == 1 in message",         result.getMessage().contains("1"));
-        check("Wizard cooldown set to 2",           wizard.getSpecialSkillCooldown() == 2);
+        check("Wizard cooldown set to 3",           wizard.getSpecialSkillCooldown() == 3);
         check("Wizard effective attack == 60",      wizard.getAttack() == 60);
     }
 
@@ -364,13 +360,16 @@ public class TestAction {
         Goblin goblin = new Goblin();
         BattleContext ctx = ctx(warrior, goblin);
 
+        
         new SpecialSkillAction(warrior, goblin).execute(ctx);
-        check("Cooldown == 2 after first use", warrior.getSpecialSkillCooldown() == 2);
+        check("Cooldown == 3 after first use", warrior.getSpecialSkillCooldown() == 3);
 
-        warrior.onTurnStart();
-        check("Cooldown == 1 after 1 turn",    warrior.getSpecialSkillCooldown() == 1);
-        warrior.onTurnStart();
-        check("Cooldown == 0 after 2 turns",   warrior.getSpecialSkillCooldown() == 0);
+        warrior.onTurnStart(); 
+        check("Cooldown == 2 after 1 turn",    warrior.getSpecialSkillCooldown() == 2);
+        warrior.onTurnStart(); 
+        check("Cooldown == 1 after 2 turns",   warrior.getSpecialSkillCooldown() == 1);
+        warrior.onTurnStart(); 
+        check("Cooldown == 0 after 3 turns",   warrior.getSpecialSkillCooldown() == 0);
 
         Goblin freshGoblin = new Goblin();
         SpecialSkillAction readySsa = new SpecialSkillAction(warrior, freshGoblin);
@@ -395,8 +394,9 @@ public class TestAction {
     private static void testSpecialSkillAction_BlockedReason() {
         System.out.println("\n=== SpecialSkillAction – blockedReason ===");
 
+        
         Warrior warrior = new Warrior("BRWarrior");
-        warrior.consumeSpecialSkillUse();
+        warrior.consumeSpecialSkillUse(); 
         Goblin goblin = new Goblin();
         SpecialSkillAction onCooldown = new SpecialSkillAction(warrior, goblin);
         String reason = onCooldown.blockedReason();
@@ -460,7 +460,7 @@ public class TestAction {
         check("execute() success",                result.isSuccess());
         check("Goblin damaged",                   goblin.getHp() < 55);
         check("Goblin has Stun",                  goblin.hasStatusEffect(Stun.class));
-        check("Cooldown set after use",           warrior.getSpecialSkillCooldown() == 2);
+        check("Cooldown set after use",           warrior.getSpecialSkillCooldown() == 3);
         check("canUse() false after use",         !ShieldBashSkill.INSTANCE.canUse(warrior));
 
         

@@ -2,15 +2,12 @@ package action;
 
 import combatant.Combatant;
 import combatant.Player;
-import combatant.Warrior;
 
 public class SpecialSkillAction extends Action {
 
     private final Combatant target;
 
     
-
-
     public SpecialSkillAction(Player actor, Combatant target) {
         super(actor);
         this.target = target;
@@ -25,7 +22,8 @@ public class SpecialSkillAction extends Action {
         if (!super.canExecute() || !PlayerSpecialSkills.forPlayer(player).canUse(player)) {
             return false;
         }
-        if (player instanceof Warrior) {
+        SpecialSkill skill = PlayerSpecialSkills.forPlayer(player);
+        if (skill.requiresTarget()) {
             return target != null && target.isAlive();
         }
         return true;
@@ -44,8 +42,9 @@ public class SpecialSkillAction extends Action {
         if (!PlayerSpecialSkills.forPlayer(player).canUse(player)) {
             return player.getName() + "'s special skill is on cooldown.";
         }
-        if (player instanceof Warrior && (target == null || !target.isAlive())) {
-            return "Shield Bash requires a living enemy.";
+        SpecialSkill skill = PlayerSpecialSkills.forPlayer(player);
+        if (skill.requiresTarget() && (target == null || !target.isAlive())) {
+            return "This skill requires a living enemy.";
         }
         return "";
     }

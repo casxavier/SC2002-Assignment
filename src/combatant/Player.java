@@ -43,6 +43,7 @@ public abstract class Player extends Combatant {
     @Override
     public void onTurnStart() {
         super.onTurnStart();
+        
         if (canAct() && specialSkillCooldown > 0) {
             specialSkillCooldown--;
         }

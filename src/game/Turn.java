@@ -3,7 +3,6 @@ package game;
 import action.*;
 import combatant.*;
 import item.Item;
-import item.PowerStone;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,9 +22,6 @@ public class Turn {
         player.onTurnStart();
         while (true) {
             int choice = GameUI.promptTurnActionChoice(sc);
-            if (choice == -1) {
-                continue;
-            }
 
             
             Action action = null;
@@ -37,10 +33,7 @@ public class Turn {
                         continue;
                     }
                     GameUI.printCombatantTargets("\nTargets:", enemies, true);
-                    int targetIndex = GameUI.promptAttackTargetIndex(sc, enemies.size());
-                    if (targetIndex < 0 || targetIndex >= enemies.size()) {
-                        continue;
-                    }
+                    int targetIndex = GameUI.promptSelectTarget(sc, enemies.size());
 
                     target = enemies.get(targetIndex);
                     action = new BasicAttackAction(player, target);
@@ -58,57 +51,37 @@ public class Turn {
                     }
                     GameUI.printInventory(inventory);
                     int itemIndex = GameUI.promptInventoryChoice(sc, inventory.size());
-                    if (itemIndex < 0 || itemIndex >= inventory.size()) {
-                        continue;
-                    }
-                    if (inventory.get(itemIndex) instanceof PowerStone && player instanceof Warrior) {
+                    if (inventory.get(itemIndex).requiresTarget(player)) {
                         if (enemies.isEmpty()) {
-                            GameUI.printNoValidTargetsForShieldBash();
+                            GameUI.printNoValidTargets();
                             continue;
                         }
-                        GameUI.printCombatantTargets("Targets for Shield Bash:", enemies, false);
-                        int t = GameUI.promptShieldBashTargetIndex(sc, enemies.size());
-                        if (t < 0 || t >= enemies.size()) {
-                            continue;
-                        }
-                        target = enemies.get(t);
-
+                        GameUI.printCombatantTargets("Targets for Item:", enemies, false);
+                        target = enemies.get(GameUI.promptSelectTarget(sc, enemies.size()));
                     }
 
                     action = new ItemAction(player, itemIndex, target);
                     break;
 
                 case 4:
-                    if (player instanceof Warrior) {
+                    SpecialSkill skill = PlayerSpecialSkills.forPlayer(player);
+                    if (skill.requiresTarget()) {
                         if (enemies.isEmpty()) {
-                            GameUI.printNoValidTargetsForShieldBash();
+                            GameUI.printNoValidTargets();
                             continue;
                         }
-                        GameUI.printCombatantTargets("Targets for Shield Bash:", enemies, false);
-                        int t = GameUI.promptShieldBashTargetIndex(sc, enemies.size());
-                        if (t < 0 || t >= enemies.size()) {
-                            continue;
-                        }
-                        target = enemies.get(t);
+                        GameUI.printCombatantTargets("Targets for Special Skill:", enemies, false);
+                        target = enemies.get(GameUI.promptSelectTarget(sc, enemies.size()));
                     }
                     action = new SpecialSkillAction(player, target);
+                    if (!action.canExecute()) {
+                        GameUI.printMessage(action.blockedReason());
+                        continue;
+                    }
                     break;
 
                 default:
-                    GameUI.printInvalidChoice();
                     continue;
-            }
-
-            if (action instanceof SpecialSkillAction) {
-                SpecialSkillAction special = (SpecialSkillAction) action;
-                if (!special.canExecute()
-                        && player.isAlive()
-                        && player.canAct()
-                        && !player.canUseSpecialSkill()) {
-                    GameUI.printMessage(special.blockedReason());
-                    GameUI.printBlankLine();
-                    continue;
-                }
             }
 
             

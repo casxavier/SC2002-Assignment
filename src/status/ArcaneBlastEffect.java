@@ -3,11 +3,6 @@ package status;
 import combatant.Combatant;
 
 
-
-
-
-
-
 public class ArcaneBlastEffect implements StatusEffect {
     private static final int BONUS_PER_KILL = 10;
     private int totalBonus;
@@ -17,10 +12,6 @@ public class ArcaneBlastEffect implements StatusEffect {
     }
 
     
-
-
-
-
     public void addKills(int kills) {
         if (kills <= 0) {
             return;
@@ -29,8 +20,6 @@ public class ArcaneBlastEffect implements StatusEffect {
     }
 
     
-
-
     public void clear() {
         totalBonus = 0;
     }
@@ -51,12 +40,6 @@ public class ArcaneBlastEffect implements StatusEffect {
     }
 
     
-
-
-
-
-
-
     public static ArcaneBlastEffect getOn(Combatant target) {
         for (StatusEffect effect : target.getStatusEffects()) {
             if (effect instanceof ArcaneBlastEffect) {

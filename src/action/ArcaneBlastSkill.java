@@ -9,8 +9,6 @@ import combatant.Wizard;
 import status.ArcaneBlastEffect;
 
 
-
-
 public final class ArcaneBlastSkill implements SpecialSkill {
 
     public static final ArcaneBlastSkill INSTANCE = new ArcaneBlastSkill();
@@ -20,6 +18,11 @@ public final class ArcaneBlastSkill implements SpecialSkill {
     @Override
     public boolean canUse(Player player) {
         return player.canUseSpecialSkill();
+    }
+
+    @Override
+    public boolean requiresTarget() {
+        return false;
     }
 
     @Override
@@ -60,12 +63,6 @@ public final class ArcaneBlastSkill implements SpecialSkill {
     }
 
     
-
-
-
-
-
-
     public static void registerArcaneBlastDefeats(Wizard wizard, int enemiesDefeated) {
         if (enemiesDefeated <= 0) {
             return;

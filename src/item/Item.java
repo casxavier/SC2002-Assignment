@@ -15,7 +15,7 @@ public abstract class Item {
         return name;
     }
 
-    public abstract String use(Player user);
+    public abstract String use(Player user, BattleContext ctx);
 
     public String useWithTarget(Player user, BattleContext ctx, Combatant target) {
         return "This item does not support targeting.";
@@ -24,4 +24,12 @@ public abstract class Item {
     public boolean requiresTarget() {
         return false;
     }
+
+    
+    public boolean requiresTarget(Player user) {
+        return requiresTarget();
+    }
+
+    
+    public abstract Item duplicate();
 }

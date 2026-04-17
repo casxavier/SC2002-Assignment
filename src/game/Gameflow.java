@@ -7,6 +7,8 @@ import item.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Map;
+
 public class Gameflow {
     public enum Difficulty {
         EASY, MEDIUM, HARD
@@ -36,10 +38,6 @@ public class Gameflow {
         }
         this.enemies = spawnInitialEnemy();
         this.turnOrderStrategy = turnOrderStrategy;
-    }
-
-    private static Item promptItem(Scanner sc, String label) {
-        return GameUI.promptItemChoice(sc, label);
     }
         
     public static Gameflow initializeGame(Scanner sc) {
@@ -82,8 +80,8 @@ public class Gameflow {
         }
 
         GameUI.showItemSelection();
-        player.addItem(promptItem(sc, "First item"));
-        player.addItem(promptItem(sc, "Second item"));
+        player.addItem(GameUI.promptItemChoice(sc, "First item"));
+        player.addItem(GameUI.promptItemChoice(sc, "Second item"));
         gameSettings.setStartingItemTemplate(copyItemsAsNew(player.getInventory()));
         GameUI.printBlankLine();
 
@@ -96,7 +94,7 @@ public class Gameflow {
 
         
         List<Combatant> orderedCombatants = getOrder();
-        printTurnOrder(orderedCombatants);
+        GameUI.printTurnOrder(orderedCombatants);
 
         
         
@@ -123,17 +121,19 @@ public class Gameflow {
                     i--;
                 }
             }
+
+            
+            Player currPlayer = gameSettings.getPlayer();
+            GameUI.printRoundSummary(turnCount, currPlayer, enemies, deadEnemies);
+            GameUI.waitBetweenRounds();
+            turnCount++;
+            history.add(currentTurn);
+
             
             if (!backupSpawned && enemies.size() == 0) {
                 spawnBackupWave();
                 backupSpawned = true;
             }
-
-            
-            printRoundSummary();
-            GameUI.waitBetweenRounds();
-            turnCount++;
-            history.add(currentTurn);
 
             
             if (enemies.isEmpty()) {
@@ -153,17 +153,6 @@ public class Gameflow {
         orderedCombatants.add(gameSettings.getPlayer());
         orderedCombatants.addAll(enemies);
         return turnOrderStrategy.getOrder(orderedCombatants);
-    }
-
-    
-    public void printRoundSummary() {
-        Player currPlayer = gameSettings.getPlayer();
-        GameUI.printRoundSummary(turnCount, currPlayer, enemies, deadEnemies);
-    }
-
-    
-    public void printTurnOrder(List<Combatant> oCombatants) {
-        GameUI.printTurnOrder(oCombatants);
     }
 
     
@@ -214,43 +203,42 @@ public class Gameflow {
 
     
     private List<Combatant> spawnInitialEnemy() { 
-        List <Combatant> enemyList  = new ArrayList<>();
-        switch (gameSettings.getDifficulty()) {
-
-            case EASY: 
-                enemyList.add(new Goblin("Goblin A"));
-                enemyList.add(new Goblin("Goblin B"));
-                enemyList.add(new Goblin("Goblin C"));
-                break;
-            case MEDIUM:
-                enemyList.add(new Goblin("Goblin A"));
-                enemyList.add(new Wolf("Wolf A"));
-                break;
-            case HARD:
-                enemyList.add(new Goblin("Goblin A"));
-                enemyList.add(new Goblin("Goblin B"));
-                break;
-            default:
-                break;
+        List<Combatant> enemyList = new ArrayList<>();
+        List<Map<String, String>> waveConfig = gameSettings.getInitialWaveConfig();
+        for (Map<String, String> config : waveConfig) {
+            String type = config.get("type");
+            String name = config.get("name");
+            Combatant enemy = createEnemy(type, name);
+            if (enemy != null) {
+                enemyList.add(enemy);
+            }
         }
         return enemyList;
     }
 
     private void spawnBackupWave() {
-        switch (gameSettings.getDifficulty()) {
-            case MEDIUM:
-                enemies.add(new Wolf("Wolf A"));
-                enemies.add(new Wolf("Wolf B"));
-                GameUI.printBackupWave(gameSettings.getDifficulty());
-                break;
-            case HARD:
-                enemies.add(new Goblin("Goblin A"));
-                enemies.add(new Wolf("Wolf A"));
-                enemies.add(new Wolf("Wolf B"));
-                GameUI.printBackupWave(gameSettings.getDifficulty());
-                break;
+        List<Map<String, String>> backupConfig = gameSettings.getBackupWaveConfig();
+        for (Map<String, String> config : backupConfig) {
+            String type = config.get("type");
+            String name = config.get("name");
+            Combatant enemy = createEnemy(type, name);
+            if (enemy != null) {
+                enemies.add(enemy);
+            }
+        }
+        if (!backupConfig.isEmpty()) {
+            GameUI.printBackupWave(gameSettings.getDifficulty());
+        }
+    }
+
+    private Combatant createEnemy(String type, String name) {
+        switch (type) {
+            case "GOBLIN":
+                return new Goblin(name);
+            case "WOLF":
+                return new Wolf(name);
             default:
-                break;
+                return null;
         }
     }
 
@@ -261,21 +249,8 @@ public class Gameflow {
     private static List<Item> copyItemsAsNew(List<Item> inventory) {
         List<Item> out = new ArrayList<>();
         for (Item item : inventory) {
-            out.add(duplicateItem(item));
+            out.add(item.duplicate());
         }
         return out;
-    }
-
-    private static Item duplicateItem(Item item) {
-        if (item instanceof Potion) {
-            return new Potion();
-        }
-        if (item instanceof PowerStone) {
-            return new PowerStone();
-        }
-        if (item instanceof SmokeBomb) {
-            return new SmokeBomb();
-        }
-        throw new IllegalArgumentException("Unknown item type: " + item.getClass().getName());
     }
 }

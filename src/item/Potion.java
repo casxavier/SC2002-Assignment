@@ -1,6 +1,7 @@
 package item;
 
 import combatant.Player;
+import action.BattleContext;
 
 public class Potion extends Item {
 
@@ -9,11 +10,16 @@ public class Potion extends Item {
     }
 
     @Override
-    public String use(Player user) {
+    public String use(Player user, BattleContext ctx) {
         int before = user.getHp();
         user.heal(100);
         int after = user.getHp();
 
         return user.getName() + " healed from " + before + " to " + after + ".";
+    }
+
+    @Override
+    public Item duplicate() {
+        return new Potion();
     }
 }

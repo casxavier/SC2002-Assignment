@@ -2,22 +2,20 @@ package action;
 
 import combatant.Combatant;
 import combatant.Player;
-import combatant.Warrior;
 import item.Item;
-import item.PowerStone;
 
 public class ItemAction extends Action {
 
     private final Player player;
     private final int itemIndex;
     
-    private final Combatant powerStoneTarget;
+    private final Combatant target;
 
-    public ItemAction(Player actor, int itemIndex, Combatant powerStoneTarget) {
+    public ItemAction(Player actor, int itemIndex, Combatant target) {
         super(actor);
         this.player = actor;
         this.itemIndex = itemIndex;
-        this.powerStoneTarget = powerStoneTarget;
+        this.target = target;
     }
 
     @Override
@@ -26,8 +24,8 @@ public class ItemAction extends Action {
             return false;
         }
         Item item = player.getInventory().get(itemIndex);
-        if (item instanceof PowerStone && player instanceof Warrior) {
-            return powerStoneTarget != null && powerStoneTarget.isAlive();
+        if (item.requiresTarget(player)) {
+            return target != null && target.isAlive();
         }
         return true;
     }
@@ -38,9 +36,12 @@ public class ItemAction extends Action {
             return ActionResult.fail("Invalid item selection.");
         }
         Item item = player.getInventory().get(itemIndex);
-        String msg = item.use(player);
-        if (item.requiresTarget()) {
-            msg = item.useWithTarget(player, ctx, powerStoneTarget);
+        String msg;
+        if (item.requiresTarget(player)) {
+            msg = item.useWithTarget(player, ctx, target);
+        }
+        else {
+            msg = item.use(player, ctx);
         }
         player.removeItem(item);
         return ActionResult.ok(msg);

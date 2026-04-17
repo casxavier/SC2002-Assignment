@@ -3,8 +3,6 @@ package action;
 import combatant.Combatant;
 
 
-
-
 public abstract class Action {
     protected final Combatant actor;
 
@@ -17,8 +15,6 @@ public abstract class Action {
     }
 
     
-
-
     public boolean canExecute() {
         return actor != null && actor.isAlive() && actor.canAct();
     }

@@ -94,20 +94,13 @@ public final class GameUI {
     }
 
     static int promptCharacterChoice(Scanner sc) {
-        while (true) {
-            try {
-                System.out.print("Choose your class [1-2]: ");
-                int choice = Integer.parseInt(sc.nextLine().trim());
-                if (choice < 1 || choice > 2) {
-                    throw new IllegalArgumentException("Invalid choice. Please enter 1 or 2.");
-                }
-                return choice;
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number (1 or 2).");
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
-        }
+        return promptMenuChoice(
+                sc,
+                "Choose your class [1-2]: ",
+                1,
+                2,
+                "Invalid input! Please enter a number.",
+                "Invalid choice! Please select 1 - 2.");
     }
 
     static void showDifficultySelection() {
@@ -122,20 +115,13 @@ public final class GameUI {
     }
 
     static int promptDifficultyChoice(Scanner sc) {
-        while (true) {
-            try {
-                System.out.print("Choose difficulty [1-3]: ");
-                int choice = Integer.parseInt(sc.nextLine().trim());
-                if (choice < 1 || choice > 3) {
-                    throw new IllegalArgumentException("Invalid choice. Please enter 1, 2, or 3.");
-                }
-                return choice;
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number (1, 2, or 3).");
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
-        }
+        return promptMenuChoice(
+                sc,
+                "Choose difficulty [1-3]: ",
+                1,
+                3,
+                "Invalid input! Please enter a number.",
+                "Invalid choice! Please select 1 - 3.");
     }
 
     static void showItemSelection() {
@@ -158,7 +144,7 @@ public final class GameUI {
             try {
                 n = Integer.parseInt(line);
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter 1, 2, or 3.");
+                System.out.println("Invalid input! Please enter a number.");
                 continue;
             }
 
@@ -170,7 +156,7 @@ public final class GameUI {
                 case 3:
                     return new SmokeBomb();
                 default:
-                    System.out.println("Invalid choice. Please enter 1, 2, or 3.");
+                    System.out.println("Invalid choice! Please select 1 - 3.");
             }
         }
     }
@@ -306,15 +292,16 @@ public final class GameUI {
         System.out.println("1) Replay with same settings");
         System.out.println("2) Start a new game");
         System.out.println("3) Exit");
-        System.out.print("Enter choice [1-3]: ");
     }
 
     static int promptEndGameChoice(Scanner sc) {
-        try {
-            return Integer.parseInt(sc.nextLine().trim());
-        } catch (NumberFormatException e) {
-            return -1;
-        }
+        return promptMenuChoice(
+                sc,
+                "Enter choice [1-3]: ",
+                1,
+                3,
+                "Invalid input! Please enter a number.",
+                "Invalid choice! Please select 1 - 3.");
     }
 
     static void printExitMessage() {
@@ -337,8 +324,8 @@ public final class GameUI {
                 "Enter choice [1-4]: ",
                 1,
                 4,
-                "Invalid input. Please enter a number.",
-                "Invalid choice. Please select from 1 to 4.");
+                "Invalid input! Please enter a number.",
+                "Invalid choice! Please select 1 - 4.");
     }
 
     static int promptMenuChoice(
@@ -348,17 +335,18 @@ public final class GameUI {
             int maxChoice,
             String invalidInputMessage,
             String invalidChoiceMessage) {
-        System.out.print(prompt);
-        try {
-            int choice = Integer.parseInt(sc.nextLine().trim());
-            if (choice < minChoice || choice > maxChoice) {
-                System.out.println(invalidChoiceMessage);
-                return -1;
+        while (true) {
+            System.out.print(prompt);
+            try {
+                int choice = Integer.parseInt(sc.nextLine().trim());
+                if (choice < minChoice || choice > maxChoice) {
+                    System.out.println(invalidChoiceMessage);
+                    continue;
+                }
+                return choice;
+            } catch (NumberFormatException e) {
+                System.out.println(invalidInputMessage);
             }
-            return choice;
-        } catch (NumberFormatException e) {
-            System.out.println(invalidInputMessage);
-            return -1;
         }
     }
 
@@ -377,33 +365,21 @@ public final class GameUI {
         }
     }
 
-    static int promptTargetIndex(
-            Scanner sc,
-            String prompt,
-            int enemyCount,
-            String invalidInputMessage,
-            String invalidChoiceMessage) {
-        int targetIndex = promptMenuChoice(sc, prompt, 1, enemyCount, invalidInputMessage, invalidChoiceMessage);
+    static int promptSelectTarget(Scanner sc, int enemyCount) {
+        if (enemyCount == 1) {
+            System.out.println("Target automatically selected.");
+            System.out.println();
+            return 0;
+        }
+        int targetIndex = promptMenuChoice(
+                sc,
+                "Select target [1-" + enemyCount + "]: ",
+                1,
+                enemyCount,
+                "Invalid input! Please enter a number.",
+                "Invalid choice! Please select 1 - " + enemyCount + ".");
         System.out.println();
-        return targetIndex == -1 ? -1 : targetIndex - 1;
-    }
-
-    static int promptAttackTargetIndex(Scanner sc, int enemyCount) {
-        return promptTargetIndex(
-                sc,
-                "Select target (1-" + enemyCount + "): ",
-                enemyCount,
-                "Invalid input!",
-                "Invalid target!");
-    }
-
-    static int promptShieldBashTargetIndex(Scanner sc, int enemyCount) {
-        return promptTargetIndex(
-                sc,
-                "Select target (1-" + enemyCount + "): ",
-                enemyCount,
-                "Invalid target.",
-                "Invalid target.");
+        return targetIndex - 1;
     }
 
     static void printInventory(List<Item> inventory) {
@@ -419,21 +395,17 @@ public final class GameUI {
                 "Select item [1-" + inventorySize + "]: ",
                 1,
                 inventorySize,
-                "Invalid input. Please enter a number.",
-                "Invalid choice. Please select a valid item.");
-        return itemIndex == -1 ? -1 : itemIndex - 1;
+                "Invalid input! Please enter a number.",
+                "Invalid choice! Please select 1 - " + inventorySize + ".");
+        return itemIndex - 1;
     }
 
     static void printNoItemsInInventory() {
         System.out.println("Your inventory is empty.");
     }
 
-    static void printNoValidTargetsForShieldBash() {
-        System.out.println("No valid targets available for Shield Bash.");
-    }
-
-    static void printInvalidChoice() {
-        System.out.println("Invalid choice.");
+    static void printNoValidTargets() {
+        System.out.println("No valid targets available.");
     }
 
     static void printMessage(String message) {

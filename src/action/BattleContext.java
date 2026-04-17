@@ -6,8 +6,6 @@ import combatant.Combatant;
 import combatant.Player;
 
 
-
-
 public final class BattleContext {
     private final Player player;
     private final List<Combatant> enemies;

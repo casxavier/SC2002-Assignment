@@ -3,10 +3,6 @@ package status;
 import combatant.Combatant;
 
 
-
-
-
-
 public class DefendingEffect implements StatusEffect {
     private int roundsRemaining;
 

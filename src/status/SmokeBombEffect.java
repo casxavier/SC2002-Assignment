@@ -3,9 +3,6 @@ package status;
 import combatant.Combatant;
 
 
-
-
-
 public class SmokeBombEffect implements StatusEffect {
     private int remainingTurns;
 

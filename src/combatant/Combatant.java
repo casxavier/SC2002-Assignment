@@ -29,8 +29,6 @@ public abstract class Combatant {
     }
 
     
-
-
     public int takeDamage(int rawAttack) {
         int mitigation = getEffectiveDefense();
         int actualDamage = Math.max(0, rawAttack - mitigation);
@@ -42,22 +40,16 @@ public abstract class Combatant {
     }
 
     
-
-
     public int getEffectiveDefense() {
         return defense + getDefenseModifierFromStatuses();
     }
 
     
-
-
     public int getAttack() {
         return attack + getAttackModifierFromStatuses();
     }
 
     
-
-
     public int getBaseAttack() {
         return attack;
     }
@@ -114,9 +106,6 @@ public abstract class Combatant {
     }
 
     
-
-
-
     public void onTurnStart() {
         List<StatusEffect> snapshot = new ArrayList<>(statusEffects);
 
@@ -128,9 +117,6 @@ public abstract class Combatant {
     }
 
     
-
-
-
     public boolean canAct() {
         for (StatusEffect effect : statusEffects) {
             if (!effect.canAct()) {

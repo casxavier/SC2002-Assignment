@@ -3,9 +3,6 @@ package status;
 import combatant.Combatant;
 
 
-
-
-
 public class Stun implements StatusEffect {
     private int remainingTurns;
 
