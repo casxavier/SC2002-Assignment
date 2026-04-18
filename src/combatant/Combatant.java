@@ -8,11 +8,11 @@ import java.util.List;
 import status.StatusEffect;
 
 public abstract class Combatant {
-    protected String name;
-    protected int hp;
-    protected int attack;
-    protected int defense;
-    protected int speed;
+    private String name;
+    private int hp;
+    private int attack;
+    private int defense;
+    private int speed;
 
     private final List<StatusEffect> statusEffects = new ArrayList<>();
 
@@ -68,6 +68,9 @@ public abstract class Combatant {
         return hp;
     }
 
+    protected void setHp(int value) {
+        this.hp = Math.max(0, value);
+    }
 
     // Status effects
 

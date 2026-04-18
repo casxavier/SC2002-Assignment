@@ -30,7 +30,7 @@ public abstract class Player extends Combatant {
         if (amount <= 0) {
             return;
         }
-        hp = Math.min(hp + amount, maxHp);
+        setHp(Math.min(getHp() + amount, maxHp));
     }
 
     public int takeDamage(int damage) {
