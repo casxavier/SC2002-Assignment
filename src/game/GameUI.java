@@ -200,7 +200,7 @@ public final class GameUI {
         String[] playerInfo = {
                 "Player: " + player.getName(),
                 "HP: " + player.getHp() + "/" + player.getMaxHp(),
-                "ATK: " + player.getAttack() + " | DEF: " + player.getDefense(),
+                "ATK: " + player.getAttack() + " | DEF: " + player.getEffectiveDefense(),
                 "SPD: " + player.getSpeed(),
                 "Special Skill CD: " + player.getSpecialSkillCooldown(),
                 getStatusEffectsString(player),
@@ -485,7 +485,7 @@ public final class GameUI {
             String[] stats = {
                     enemy.getName(),
                     "HP: " + enemy.getHp(),
-                    "ATK: " + enemy.getAttack() + " | DEF: " + enemy.getDefense(),
+                    "ATK: " + enemy.getAttack() + " | DEF: " + enemy.getEffectiveDefense(),
                     "SPD: " + enemy.getSpeed(),
                     getStatusEffectsString(enemy)
             };

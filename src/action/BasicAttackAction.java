@@ -33,8 +33,14 @@ public class BasicAttackAction extends Action {
         int raw = actor.getAttack();
         int dealt = target.takeDamage(raw);
         int reduced = raw - dealt;
+        int defense = target.getEffectiveDefense();
+        if (reduced != defense) {
+            return ActionResult.ok(String.format(
+                    "%s attacks %s for %d damage (reduced by status effects, %s HP: %d).",
+                    actor.getName(), target.getName(), dealt, target.getName(), target.getHp()));
+        }
         return ActionResult.ok(String.format(
-                "%s attacks %s for %d damage (%d - %d defense, %s HP: %d).",
-                actor.getName(), target.getName(), dealt, raw, reduced, target.getName(), target.getHp()));
+                "%s attacks %s for %d damage (%d - %d def, %s HP: %d).",
+                actor.getName(), target.getName(), dealt, raw, defense, target.getName(), target.getHp()));
     }
 }

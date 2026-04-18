@@ -29,8 +29,10 @@ public abstract class Combatant {
     }
 
     public int takeDamage(int rawAttack) {
-        int mitigation = getEffectiveDefense();
-        int actualDamage = Math.max(0, rawAttack - mitigation);
+        int actualDamage = Math.max(0, rawAttack - getEffectiveDefense());
+        for (StatusEffect effect : getStatusEffects()) {
+            actualDamage = effect.modifyDamage(actualDamage);
+        }
         hp -= actualDamage;
         if (hp < 0) {
             hp = 0;

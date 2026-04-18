@@ -2,6 +2,7 @@ package combatant;
 
 import action.SpecialSkill;
 import item.Item;
+import status.StatusEffect;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -32,13 +33,7 @@ public abstract class Player extends Combatant {
         hp = Math.min(hp + amount, maxHp);
     }
 
-    @Override
     public int takeDamage(int damage) {
-        // Smoke bomb nullifies all damage
-        if (hasStatusEffect(status.SmokeBombEffect.class)) {
-            damage = 0;
-        }
-
         return super.takeDamage(damage);
     }
 

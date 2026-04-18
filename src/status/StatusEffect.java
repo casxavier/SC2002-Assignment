@@ -21,7 +21,6 @@ public interface StatusEffect {
         return 0;
     }
 
-
     default int getDefenseModifier() {
         return 0;
     }
@@ -30,6 +29,9 @@ public interface StatusEffect {
         return 0;
     }
 
+    default int modifyDamage(int incomingDamage) {
+        return incomingDamage;
+    }
 
     boolean isExpired();
 }

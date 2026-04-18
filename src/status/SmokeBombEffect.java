@@ -24,6 +24,11 @@ public class SmokeBombEffect implements StatusEffect {
     }
 
     @Override
+    public int modifyDamage(int incomingDamage) {
+        return 0; // Block all damage
+    }
+
+    @Override
     public boolean isExpired() {
         return remainingTurns <= 0;
     }
