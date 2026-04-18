@@ -12,51 +12,54 @@ import java.util.Scanner;
 
 public final class GameUI {
 
-
     private static long TURN_DELAY_MS = 500;
     private static long ROUND_DELAY_MS = 1000;
 
-    private static final String[] WARRIOR_ART = {
-            "           !          /",
-            "   ____   .-.       //",
-            "  /    |__|=|__    //",
-            " ||  /||_/`-`\\_) _[ ]",
-            " ||/  |//\\___/\\\\-'",
-            "  \\___// /   \\/",
-            "        |\\_._/|",
-            "         <_I_>",
-            "          |||",
-            "         /_|_\\"
-    };
+    public static final Map<String, String[]> ASCII_ART = new LinkedHashMap<>();
 
-    private static final String[] WIZARD_ART = {
-            "          /^\\",
-            "     /\\   \"V\"",
-            "    /__\\   I      O  o",
-            "   //..\\\\  I     .",
-            "   /l\\/j\\  (]    .  O",
-            "  /. ~~ ,\\/I          .",
-            "  \\\\L__j^\\/I       o",
-            "   \\/--v}  I     o   .",
-            "   |    |  I",
-            " _/j  L l\\_!"
-    };
+    static {
+        ASCII_ART.put("WARRIOR", new String[]{
+                "           !          /",
+                "   ____   .-.       //",
+                "  /    |__|=|__    //",
+                " ||  /||_/`-`\\_) _[ ]",
+                " ||/  |//\\___/\\\\-'",
+                "  \\___// /   \\/",
+                "        |\\_._/|",
+                "         <_I_>",
+                "          |||",
+                "         /_|_\\"
+        });
 
-    private static final String[] GOBLIN_ART = {
-            "  ,___,",
-            "  (o_o)",
-            " /( | )\\",
-            "   / \\",
-            "  _| |_"
-    };
+        ASCII_ART.put("WIZARD", new String[]{
+                "          /^\\",
+                "     /\\   \"V\"",
+                "    /__\\   I      O  o",
+                "   //..\\\\  I     .",
+                "   /l\\/j\\  (]    .  O",
+                "  /. ~~ ,\\/I          .",
+                "  \\\\L__j^\\/I       o",
+                "   \\/--v}  I     o   .",
+                "   |    |  I",
+                " _/j  L l\\_!"
+        });
 
-    private static final String[] WOLF_ART = {
-            " /\\_____/\\",
-            "(  o   o  )",
-            " \\   ^   /",
-            " /| |_| |\\",
-            "  /     \\"
-    };
+        ASCII_ART.put("GOBLIN", new String[]{
+                "  ,___,",
+                "  (o_o)",
+                " /( | )\\",
+                "   / \\",
+                "  _| |_"
+        });
+
+        ASCII_ART.put("WOLF", new String[]{
+                " /\\_____/\\",
+                "(  o   o  )",
+                " \\   ^   /",
+                " /| |_| |\\",
+                "  /     \\"
+        });
+    }
 
     private static final int BATTLE_BLOCK_WIDTH = 34;
     private static final int ENEMY_BLOCK_WIDTH = 14;
@@ -100,11 +103,9 @@ public final class GameUI {
             String type = playerTypes.get(i);
             System.out.println((i + 1) + ") " + GameSettings.getCharacterDescription(type));
 
-            // Print ASCII art for character
-            if ("WARRIOR".equals(type)) {
-                printAsciiBlock(WARRIOR_ART, "   ");
-            } else if ("WIZARD".equals(type)) {
-                printAsciiBlock(WIZARD_ART, "   ");
+            String[] art = ASCII_ART.get(type);
+            if (art != null) {
+                printAsciiBlock(art, "   ");
             }
 
             if (i < playerTypes.size() - 1) {
@@ -434,21 +435,20 @@ public final class GameUI {
 
     private static String[] getPlayerArt(Player player) {
         if (player instanceof Warrior) {
-            return WARRIOR_ART;
+            return ASCII_ART.getOrDefault("WARRIOR", new String[]{"(Warrior)"});
         }
         if (player instanceof Wizard) {
-            return WIZARD_ART;
+            return ASCII_ART.getOrDefault("WIZARD", new String[]{"(Wizard)"});
         }
         return new String[]{"(Player)"};
     }
 
     private static String[] getEnemyArt(Combatant enemy) {
-        String enemyName = enemy.getName().toLowerCase();
-        if (enemyName.contains("goblin")) {
-            return GOBLIN_ART;
+        if (enemy instanceof Goblin) {
+            return ASCII_ART.getOrDefault("GOBLIN", new String[]{"(Goblin)"});
         }
-        if (enemyName.contains("wolf")) {
-            return WOLF_ART;
+        if (enemy instanceof Wolf) {
+            return ASCII_ART.getOrDefault("WOLF", new String[]{"(Wolf)"});
         }
         return new String[]{"(Enemy)"};
     }
