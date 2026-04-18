@@ -1,14 +1,9 @@
 package game;
 
-import combatant.Combatant;
-import combatant.Player;
-import combatant.Warrior;
-import combatant.Wizard;
-import item.Item;
-import item.Potion;
-import item.PowerStone;
-import item.SmokeBomb;
+import combatant.*;
+import item.*;
 import status.Stun;
+import game.GameSettings.Difficulty;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -72,35 +67,68 @@ public final class GameUI {
     private GameUI() {
     }
 
+    static int promptMenuChoice(
+            Scanner sc,
+            String prompt,
+            int minChoice,
+            int maxChoice,
+            String invalidInputMessage,
+            String invalidChoiceMessage) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                int choice = Integer.parseInt(sc.nextLine().trim());
+                if (choice < minChoice || choice > maxChoice) {
+                    System.out.println(invalidChoiceMessage);
+                    continue;
+                }
+                return choice;
+            } catch (NumberFormatException e) {
+                System.out.println(invalidInputMessage);
+            }
+        }
+    }
+
     static void showCharacterSelection() {
         System.out.println();
         System.out.println("======================================");
         System.out.println("        SELECT YOUR CHARACTER");
         System.out.println("======================================");
-        System.out.println("1) Warrior");
-        printAsciiBlock(WARRIOR_ART, "   ");
-        System.out.println("   HP: 260 | Attack: 40 | Defense: 20 | Speed: 30");
-        System.out.println("   Special Skill: Shield Bash");
-        System.out.println("   - Deal basic attack damage to one enemy.");
-        System.out.println("   - Target cannot act this turn and next turn.");
-        System.out.println("--------------------------------------");
-        System.out.println("2) Wizard");
-        printAsciiBlock(WIZARD_ART, "   ");
-        System.out.println("   HP: 200 | Attack: 50 | Defense: 10 | Speed: 20");
-        System.out.println("   Special Skill: Arcane Blast");
-        System.out.println("   - Deal basic attack damage to all enemies.");
-        System.out.println("   - Each enemy defeated grants +10 attack until level ends.");
+
+        java.util.List<String> playerTypes = GameSettings.getAvailablePlayerTypes();
+        for (int i = 0; i < playerTypes.size(); i++) {
+            String type = playerTypes.get(i);
+            System.out.println((i + 1) + ") " + GameSettings.getCharacterDescription(type));
+
+            // Print ASCII art for character
+            if ("WARRIOR".equals(type)) {
+                printAsciiBlock(WARRIOR_ART, "   ");
+            } else if ("WIZARD".equals(type)) {
+                printAsciiBlock(WIZARD_ART, "   ");
+            }
+
+            if (i < playerTypes.size() - 1) {
+                System.out.println("--------------------------------------");
+            }
+        }
+
         System.out.println("======================================");
     }
 
     static int promptCharacterChoice(Scanner sc) {
+        int maxChoice = GameSettings.getAvailablePlayerTypes().size();
         return promptMenuChoice(
                 sc,
-                "Choose your class [1-2]: ",
+                "Choose your class [1-" + maxChoice + "]: ",
                 1,
-                2,
+                maxChoice,
                 "Invalid input! Please enter a number.",
-                "Invalid choice! Please select 1 - 2.");
+                "Invalid choice! Please select 1 - " + maxChoice + ".");
+    }
+
+    static String promptPlayerName(Scanner sc) {
+        System.out.print("Enter your character name: ");
+        return sc.nextLine().trim();
     }
 
     static void showDifficultySelection() {
@@ -130,35 +158,31 @@ public final class GameUI {
         System.out.println("              PICK ITEMS");
         System.out.println("======================================");
         System.out.println("Choose 2 single-use items (duplicates allowed):");
-        System.out.println("1) Potion      - Heal 100 HP");
-        System.out.println("2) Power Stone - One free special skill use");
-        System.out.println("3) Smoke Bomb  - Enemies deal 0 damage this turn and next");
+
+        java.util.List<String> itemTypes = GameSettings.getAvailableItemTypes();
+        for (int i = 0; i < itemTypes.size(); i++) {
+            String type = itemTypes.get(i);
+            System.out.println((i + 1) + ") " + GameSettings.getItemDescription(type));
+        }
+
         System.out.println("======================================");
     }
 
-    static Item promptItemChoice(Scanner sc, String label) {
-        while (true) {
-            System.out.print(label + " [1-3]: ");
-            String line = sc.nextLine().trim();
-            int n;
-            try {
-                n = Integer.parseInt(line);
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input! Please enter a number.");
-                continue;
-            }
+    static String promptItemChoice(Scanner sc, String label) {
+        java.util.List<String> itemTypes = GameSettings.getAvailableItemTypes();
+        int maxChoice = itemTypes.size();
 
-            switch (n) {
-                case 1:
-                    return new Potion();
-                case 2:
-                    return new PowerStone();
-                case 3:
-                    return new SmokeBomb();
-                default:
-                    System.out.println("Invalid choice! Please select 1 - 3.");
-            }
-        }
+        int choice = promptMenuChoice(
+                sc,
+                label + " [1-" + maxChoice + "]: ",
+                1,
+                maxChoice,
+                "Invalid input! Please enter a number.",
+                "Invalid choice! Please select 1 - " + maxChoice + "."
+        );
+
+        String itemType = itemTypes.get(choice - 1);
+        return itemType;
     }
 
     static void printTurnHeader(int turnCount) {
@@ -250,7 +274,7 @@ public final class GameUI {
         }
     }
 
-    static void printBackupWave(Gameflow.Difficulty difficulty) {
+    static void printBackupWave(Difficulty difficulty) {
         switch (difficulty) {
             case MEDIUM:
                 System.out.println("Backup Spawn Triggered! 2 Wolves (HP: 40) entered the arena!");
@@ -321,28 +345,6 @@ public final class GameUI {
                 4,
                 "Invalid input! Please enter a number.",
                 "Invalid choice! Please select 1 - 4.");
-    }
-
-    static int promptMenuChoice(
-            Scanner sc,
-            String prompt,
-            int minChoice,
-            int maxChoice,
-            String invalidInputMessage,
-            String invalidChoiceMessage) {
-        while (true) {
-            System.out.print(prompt);
-            try {
-                int choice = Integer.parseInt(sc.nextLine().trim());
-                if (choice < minChoice || choice > maxChoice) {
-                    System.out.println(invalidChoiceMessage);
-                    continue;
-                }
-                return choice;
-            } catch (NumberFormatException e) {
-                System.out.println(invalidInputMessage);
-            }
-        }
     }
 
     static void printNoEnemiesToAttack() {

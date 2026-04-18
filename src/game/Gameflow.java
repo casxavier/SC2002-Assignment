@@ -3,6 +3,7 @@ package game;
 import action.ArcaneBlastSkill;
 import combatant.*;
 import item.*;
+import game.GameSettings.Difficulty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +11,6 @@ import java.util.Scanner;
 import java.util.Map;
 
 public class Gameflow {
-    public enum Difficulty {
-        EASY, MEDIUM, HARD
-    }
 
     private static GameSettings gameSettings;
     private final List<Combatant> enemies;
@@ -41,23 +39,18 @@ public class Gameflow {
     }
 
     public static Gameflow initializeGame(Scanner sc) {
-        int choice = 0;
-        Player player = null;
-
         GameUI.showCharacterSelection();
-        choice = GameUI.promptCharacterChoice(sc);
+        int choice = GameUI.promptCharacterChoice(sc);
 
+        java.util.List<String> playerTypes = GameSettings.getAvailablePlayerTypes();
+        String selectedType = playerTypes.get(choice - 1);
 
-        switch (choice) {
-            case 1:
-                player = new Warrior("Warrior");
-                break;
-            case 2:
-                player = new Wizard("Wizard");
-                break;
-        }
         GameUI.printBlankLine();
+        String playerName = GameUI.promptPlayerName(sc);
 
+        Player player = createPlayer(selectedType, playerName);
+
+        GameUI.printBlankLine();
 
         int chosenDifficulty = 0;
         GameUI.showDifficultySelection();
@@ -80,8 +73,12 @@ public class Gameflow {
         }
 
         GameUI.showItemSelection();
-        player.addItem(GameUI.promptItemChoice(sc, "First item"));
-        player.addItem(GameUI.promptItemChoice(sc, "Second item"));
+        player.addItem(
+            createItem(GameUI.promptItemChoice(sc, "First item"))
+        );
+        player.addItem(
+            createItem(GameUI.promptItemChoice(sc, "Second item"))
+        );
         gameSettings.setStartingItemTemplate(copyItemsAsNew(player.getInventory()));
         GameUI.printBlankLine();
 
@@ -160,14 +157,8 @@ public class Gameflow {
                 Difficulty currentDifficulty = gameSettings.getDifficulty();
 
 
-                Player replayPlayer;
-                if (currentPlayer instanceof Warrior) {
-                    replayPlayer = new Warrior(currentPlayer.getName());
-                } else if (currentPlayer instanceof Wizard) {
-                    replayPlayer = new Wizard(currentPlayer.getName());
-                } else {
-                    replayPlayer = new Warrior(currentPlayer.getName());
-                }
+                String playerType = currentPlayer.getClass().getSimpleName().toUpperCase();
+                Player replayPlayer = createPlayer(playerType, currentPlayer.getName());
 
                 for (Item item : copyItemsAsNew(gameSettings.getStartingItemTemplate())) {
                     replayPlayer.addItem(item);
@@ -221,14 +212,30 @@ public class Gameflow {
     }
 
     private Enemy createEnemy(String type, String name) {
-        switch (type) {
-            case "GOBLIN":
-                return new Goblin(name);
-            case "WOLF":
-                return new Wolf(name);
-            default:
-                return null;
+        java.util.function.Function<String, Enemy> factory = GameSettings.getEnemyFactory(type);
+        if (factory == null) {
+            System.err.println("Unknown enemy type: " + type);
+            return null;
         }
+        return factory.apply(name);
+    }
+
+    public static Player createPlayer(String type, String name) {
+        java.util.function.Function<String, Player> factory = GameSettings.getPlayerFactory(type);
+        if (factory == null) {
+            System.err.println("Unknown player type: " + type);
+            return null;
+        }
+        return factory.apply(name);
+    }
+
+    public static Item createItem(String type) {
+        java.util.function.Supplier<Item> factory = GameSettings.getItemFactory(type);
+        if (factory == null) {
+            System.err.println("Unknown item type: " + type);
+            return null;
+        }
+        return factory.get();
     }
 
     private static List<Item> copyItemsAsNew(List<Item> inventory) {

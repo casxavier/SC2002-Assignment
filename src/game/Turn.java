@@ -24,7 +24,6 @@ public class Turn {
         while (true) {
             int choice = GameUI.promptTurnActionChoice(sc);
 
-
             Action action = null;
             Combatant target = null;
             switch (choice) {

@@ -1,69 +1,69 @@
 package game;
 
 import combatant.*;
-import game.Gameflow.Difficulty;
-import item.Item;
+import item.*;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class GameSettings {
+    public enum Difficulty {
+        EASY, MEDIUM, HARD
+    }
+
     private Difficulty difficulty;
     private Player player;
 
     private List<Item> startingItemTemplate = new ArrayList<>();
-
-    private static final Map<Difficulty, List<Map<String, String>>> INITIAL_WAVE_CONFIG = new HashMap<>();
-    private static final Map<Difficulty, List<Map<String, String>>> BACKUP_WAVE_CONFIG = new HashMap<>();
-
-    static {
-        List<Map<String, String>> easyInitial = new ArrayList<>();
-        List<Map<String, String>> mediumInitial = new ArrayList<>();
-        List<Map<String, String>> hardInitial = new ArrayList<>();
-        List<Map<String, String>> easyBackup = new ArrayList<>();
-        List<Map<String, String>> mediumBackup = new ArrayList<>();
-        List<Map<String, String>> hardBackup = new ArrayList<>();
-        easyInitial.add(createEnemyConfig("GOBLIN", "Goblin A"));
-        easyInitial.add(createEnemyConfig("GOBLIN", "Goblin B"));
-        easyInitial.add(createEnemyConfig("GOBLIN", "Goblin C"));
-
-
-        mediumInitial.add(createEnemyConfig("GOBLIN", "Goblin A"));
-        mediumInitial.add(createEnemyConfig("WOLF", "Wolf A"));
-
-        hardInitial.add(createEnemyConfig("GOBLIN", "Goblin A"));
-        hardInitial.add(createEnemyConfig("GOBLIN", "Goblin B"));
-
-
-        mediumBackup.add(createEnemyConfig("WOLF", "Wolf A"));
-        mediumBackup.add(createEnemyConfig("WOLF", "Wolf B"));
-
-        hardBackup.add(createEnemyConfig("GOBLIN", "Goblin A"));
-        hardBackup.add(createEnemyConfig("WOLF", "Wolf A"));
-        hardBackup.add(createEnemyConfig("WOLF", "Wolf B"));
-
-        INITIAL_WAVE_CONFIG.put(Difficulty.EASY, easyInitial);
-        INITIAL_WAVE_CONFIG.put(Difficulty.MEDIUM, mediumInitial);
-        INITIAL_WAVE_CONFIG.put(Difficulty.HARD, hardInitial);
-        BACKUP_WAVE_CONFIG.put(Difficulty.EASY, easyBackup);
-        BACKUP_WAVE_CONFIG.put(Difficulty.MEDIUM, mediumBackup);
-        BACKUP_WAVE_CONFIG.put(Difficulty.HARD, hardBackup);
-
-    }
 
     public GameSettings(Difficulty difficulty, Player player) {
         this.difficulty = difficulty;
         this.player = player;
     }
 
-    public Difficulty getDifficulty() {
-        return difficulty;
+    public static List<String> getAvailablePlayerTypes() {
+        return new ArrayList<>(DeveloperConfig.PLAYER_REGISTRY.keySet());
     }
 
-    private static Map<String, String> createEnemyConfig(String type, String name) {
-        Map<String, String> config = new HashMap<>();
-        config.put("type", type);
-        config.put("name", name);
-        return config;
+    public static List<String> getAvailableItemTypes() {
+        return new ArrayList<>(DeveloperConfig.ITEM_REGISTRY.keySet());
+    }
+
+    public static List<String> getAvailableEnemyTypes() {
+        return new ArrayList<>(DeveloperConfig.ENEMY_REGISTRY.keySet());
+    }
+
+    private static <T> T getFactory(String type, Map<String, T> registry) {
+        return registry.get(type);
+    }
+
+    public static Function<String, Player> getPlayerFactory(String type) {
+        return getFactory(type, DeveloperConfig.PLAYER_REGISTRY);
+    }
+
+    public static Supplier<Item> getItemFactory(String type) {
+        return getFactory(type, DeveloperConfig.ITEM_REGISTRY);
+    }
+
+    public static Function<String, Enemy> getEnemyFactory(String type) {
+        return getFactory(type, DeveloperConfig.ENEMY_REGISTRY);
+    }
+
+    public static String getCharacterDescription(String type) {
+        return DeveloperConfig.CHARACTER_DESCRIPTIONS.getOrDefault(type, "Unknown character");
+    }
+
+    public static String getItemDescription(String type) {
+        return DeveloperConfig.ITEM_DESCRIPTIONS.getOrDefault(type, "Unknown item");
+    }
+
+    public static int getMaxItemChoices() {
+        return DeveloperConfig.ITEM_REGISTRY.size();
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
     }
 
     public Player getPlayer() {
@@ -86,13 +86,11 @@ public class GameSettings {
         return Collections.unmodifiableList(startingItemTemplate);
     }
 
-
     public List<Map<String, String>> getInitialWaveConfig() {
-        return new ArrayList<>(INITIAL_WAVE_CONFIG.getOrDefault(difficulty, new ArrayList<>()));
+        return new ArrayList<>(DeveloperConfig.INITIAL_WAVE_CONFIG.getOrDefault(difficulty, new ArrayList<>()));
     }
 
-
     public List<Map<String, String>> getBackupWaveConfig() {
-        return new ArrayList<>(BACKUP_WAVE_CONFIG.getOrDefault(difficulty, new ArrayList<>()));
+        return new ArrayList<>(DeveloperConfig.BACKUP_WAVE_CONFIG.getOrDefault(difficulty, new ArrayList<>()));
     }
 }
