@@ -43,13 +43,13 @@ public abstract class Player extends Combatant {
     @Override
     public void onTurnStart() {
         super.onTurnStart();
-        
+
         if (canAct() && specialSkillCooldown > 0) {
             specialSkillCooldown--;
         }
     }
 
-    
+
 
     public boolean canUseSpecialSkill() {
         return specialSkillCooldown == 0 || hasPowerStoneCharge;
@@ -67,7 +67,7 @@ public abstract class Player extends Combatant {
         return specialSkillCooldown;
     }
 
-    
+    // Special Skill
 
     public List<Item> getInventory() {
         return Collections.unmodifiableList(inventory);
@@ -89,7 +89,7 @@ public abstract class Player extends Combatant {
         inventory.remove(item);
     }
 
-    
+    // S
 
     public boolean isSmokeActive() {
         return hasStatusEffect(status.SmokeBombEffect.class);
@@ -104,7 +104,7 @@ public abstract class Player extends Combatant {
         return 0;
     }
 
-    
+    // Power Stone Charge
 
     public void grantPowerStoneCharge() {
         hasPowerStoneCharge = true;

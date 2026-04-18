@@ -24,7 +24,7 @@ public class Gameflow {
     private boolean backupSpawned = false;
     private boolean won = false;
 
-    
+
     public Gameflow(Combatant player, Difficulty difficulty, TurnOrderStrategy turnOrderStrategy) {
         List<Item> preservedTemplate = null;
         if (gameSettings != null && !gameSettings.getStartingItemTemplate().isEmpty()) {
@@ -39,7 +39,7 @@ public class Gameflow {
         this.enemies = spawnInitialEnemy();
         this.turnOrderStrategy = turnOrderStrategy;
     }
-        
+
     public static Gameflow initializeGame(Scanner sc) {
         int choice = 0;
         Player player = null;
@@ -47,7 +47,7 @@ public class Gameflow {
         GameUI.showCharacterSelection();
         choice = GameUI.promptCharacterChoice(sc);
 
-        
+
         switch (choice) {
             case 1:
                 player = new Warrior("Warrior");
@@ -58,7 +58,7 @@ public class Gameflow {
         }
         GameUI.printBlankLine();
 
-        
+
         int chosenDifficulty = 0;
         GameUI.showDifficultySelection();
         chosenDifficulty = GameUI.promptDifficultyChoice(sc);
@@ -89,30 +89,24 @@ public class Gameflow {
         return newGame;
     }
 
-    
+
     public void executeGameLoop(Scanner sc) {
 
-        
         List<Combatant> orderedCombatants = getOrder();
         GameUI.printTurnOrder(orderedCombatants);
 
-        
-        
         Player player = gameSettings.getPlayer();
         while (player.isAlive()) {
 
             GameUI.printTurnHeader(turnCount);
 
-
-            
             currentTurn = new Turn(turnCount, player, enemies, orderedCombatants);
             currentTurn.executeTurn(sc);
 
-            
             if(!player.isAlive()){
                 break;
             }
-            
+
             for (int i = 0; i < enemies.size(); i++) {
                 if (!enemies.get(i).isAlive()) {
                     deadEnemies.add(enemies.get(i));
@@ -121,20 +115,17 @@ public class Gameflow {
                 }
             }
 
-            
             Player currPlayer = gameSettings.getPlayer();
             GameUI.printRoundSummary(turnCount, currPlayer, enemies, deadEnemies);
             GameUI.waitBetweenRounds();
             turnCount++;
             history.add(currentTurn);
 
-            
             if (!backupSpawned && enemies.size() == 0) {
                 spawnBackupWave();
                 backupSpawned = true;
             }
 
-            
             if (enemies.isEmpty()) {
                 won = true;
                 break;
@@ -146,7 +137,7 @@ public class Gameflow {
         gameCompletion(sc);
     }
 
-    
+
     private List<Combatant> getOrder() {
         List<Combatant> orderedCombatants = new ArrayList<>();
         orderedCombatants.add(gameSettings.getPlayer());
@@ -154,10 +145,9 @@ public class Gameflow {
         return turnOrderStrategy.getOrder(orderedCombatants);
     }
 
-    
+
     public void gameCompletion(Scanner sc) {
-        
-        
+
         GameUI.printGameCompletion(won, gameSettings.getPlayer(), enemies.size(), turnCount);
         GameUI.showEndGameOptions();
 
@@ -165,11 +155,11 @@ public class Gameflow {
 
         switch (choice) {
             case 1: {
-                
+
                 Player currentPlayer = gameSettings.getPlayer();
                 Difficulty currentDifficulty = gameSettings.getDifficulty();
 
-                
+
                 Player replayPlayer;
                 if (currentPlayer instanceof Warrior) {
                     replayPlayer = new Warrior(currentPlayer.getName());
@@ -200,8 +190,8 @@ public class Gameflow {
         }
     }
 
-    
-    private List<Combatant> spawnInitialEnemy() { 
+
+    private List<Combatant> spawnInitialEnemy() {
         List<Combatant> enemyList = new ArrayList<>();
         List<Map<String, String>> waveConfig = gameSettings.getInitialWaveConfig();
         for (Map<String, String> config : waveConfig) {

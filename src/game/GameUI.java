@@ -17,7 +17,7 @@ import java.util.Scanner;
 
 public final class GameUI {
 
-    
+
     private static long TURN_DELAY_MS = 500;
     private static long ROUND_DELAY_MS = 1000;
 
@@ -178,6 +178,7 @@ public final class GameUI {
                 "ATK: " + player.getAttack() + " | DEF: " + player.getDefense(),
                 "SPD: " + player.getSpeed(),
                 "Special Skill CD: " + player.getSpecialSkillCooldown(),
+                getStatusEffectsString(player),
         };
         String[] leftBlock = buildCombatantBlock(playerArt, playerInfo, BATTLE_BLOCK_WIDTH);
 
@@ -489,12 +490,35 @@ public final class GameUI {
                     enemy.getName(),
                     "HP: " + enemy.getHp(),
                     "ATK: " + enemy.getAttack() + " | DEF: " + enemy.getDefense(),
-                    "SPD: " + enemy.getSpeed()
+                    "SPD: " + enemy.getSpeed(),
+                    getStatusEffectsString(enemy)
             };
             enemyBlocks[i++] = buildCombatantBlock(art, stats, ENEMY_BLOCK_WIDTH);
         }
 
         return joinBlocksHorizontally(enemyBlocks, ENEMY_GAP);
+    }
+
+    private static String getStatusEffectsString(Combatant combatant) {
+        java.util.List<status.StatusEffect> effects = combatant.getStatusEffects();
+        if (effects.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder("Status: ");
+        for (int i = 0; i < effects.size(); i++) {
+            status.StatusEffect effect = effects.get(i);
+            if (i > 0) sb.append(", ");
+
+            int duration = effect.getRemainingTurns();
+            if (duration > 0) {
+                sb.append(effect.getName()).append(" (").append(duration).append("t)");
+            }
+            else {
+                sb.append(effect.getName());
+            }
+        }
+        return sb.toString();
     }
 
     private static String[] joinBlocksHorizontally(String[][] blocks, int gapSize) {

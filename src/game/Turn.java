@@ -24,7 +24,7 @@ public class Turn {
         while (true) {
             int choice = GameUI.promptTurnActionChoice(sc);
 
-            
+
             Action action = null;
             Combatant target = null;
             switch (choice) {
@@ -85,7 +85,7 @@ public class Turn {
                     continue;
             }
 
-            
+
             for (int i = 0; i < turnOrder.size(); i++) {
                 Combatant c = turnOrder.get(i);
                 if (c.equals(player)) {

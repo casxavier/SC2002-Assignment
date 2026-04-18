@@ -11,7 +11,7 @@ public class ArcaneBlastEffect implements StatusEffect {
         this.totalBonus = 0;
     }
 
-    
+
     public void addKills(int kills) {
         if (kills <= 0) {
             return;
@@ -19,7 +19,7 @@ public class ArcaneBlastEffect implements StatusEffect {
         totalBonus += kills * BONUS_PER_KILL;
     }
 
-    
+
     public void clear() {
         totalBonus = 0;
     }
@@ -39,7 +39,7 @@ public class ArcaneBlastEffect implements StatusEffect {
         return false;
     }
 
-    
+    // Function to get the ArcaneBlastEffect from a target, if any
     public static ArcaneBlastEffect getOn(Combatant target) {
         for (StatusEffect effect : target.getStatusEffects()) {
             if (effect instanceof ArcaneBlastEffect) {

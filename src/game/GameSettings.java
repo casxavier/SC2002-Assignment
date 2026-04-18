@@ -9,7 +9,7 @@ import java.util.*;
 public class GameSettings {
     private Difficulty difficulty;
     private Player player;
-    
+
     private List<Item> startingItemTemplate = new ArrayList<>();
 
     private static final Map<Difficulty, List<Map<String, String>>> INITIAL_WAVE_CONFIG = new HashMap<>();
@@ -25,7 +25,7 @@ public class GameSettings {
         easyInitial.add(createEnemyConfig("GOBLIN", "Goblin A"));
         easyInitial.add(createEnemyConfig("GOBLIN", "Goblin B"));
         easyInitial.add(createEnemyConfig("GOBLIN", "Goblin C"));
-       
+
 
         mediumInitial.add(createEnemyConfig("GOBLIN", "Goblin A"));
         mediumInitial.add(createEnemyConfig("WOLF", "Wolf A"));
@@ -44,9 +44,9 @@ public class GameSettings {
         INITIAL_WAVE_CONFIG.put(Difficulty.EASY, easyInitial);
         INITIAL_WAVE_CONFIG.put(Difficulty.MEDIUM, mediumInitial);
         INITIAL_WAVE_CONFIG.put(Difficulty.HARD, hardInitial);
-        INITIAL_WAVE_CONFIG.put(Difficulty.EASY, easyBackup);
-        INITIAL_WAVE_CONFIG.put(Difficulty.MEDIUM, mediumBackup);
-        INITIAL_WAVE_CONFIG.put(Difficulty.HARD, hardBackup);
+        BACKUP_WAVE_CONFIG.put(Difficulty.EASY, easyBackup);
+        BACKUP_WAVE_CONFIG.put(Difficulty.MEDIUM, mediumBackup);
+        BACKUP_WAVE_CONFIG.put(Difficulty.HARD, hardBackup);
 
     }
 
@@ -86,12 +86,12 @@ public class GameSettings {
         return Collections.unmodifiableList(startingItemTemplate);
     }
 
-    
+
     public List<Map<String, String>> getInitialWaveConfig() {
         return new ArrayList<>(INITIAL_WAVE_CONFIG.getOrDefault(difficulty, new ArrayList<>()));
     }
 
-    
+
     public List<Map<String, String>> getBackupWaveConfig() {
         return new ArrayList<>(BACKUP_WAVE_CONFIG.getOrDefault(difficulty, new ArrayList<>()));
     }

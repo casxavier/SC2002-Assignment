@@ -7,9 +7,9 @@ public class Stun implements StatusEffect {
     private int remainingTurns;
 
     public Stun() {
-        
-        
-        
+
+
+
         this.remainingTurns = 3;
     }
 
@@ -20,7 +20,7 @@ public class Stun implements StatusEffect {
 
     @Override
     public void onTurnStart(Combatant target) {
-        
+
         if (remainingTurns > 0) {
             remainingTurns--;
         }

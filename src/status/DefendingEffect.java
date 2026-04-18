@@ -31,4 +31,8 @@ public class DefendingEffect implements StatusEffect {
     public boolean isExpired() {
         return roundsRemaining <= 0;
     }
+
+    public int getRemainingTurns() {
+        return Math.max(0, roundsRemaining);
+    }
 }
