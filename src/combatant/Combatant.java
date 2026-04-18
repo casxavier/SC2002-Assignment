@@ -28,7 +28,6 @@ public abstract class Combatant {
         return hp > 0;
     }
 
-    
     public int takeDamage(int rawAttack) {
         int mitigation = getEffectiveDefense();
         int actualDamage = Math.max(0, rawAttack - mitigation);
@@ -39,17 +38,14 @@ public abstract class Combatant {
         return actualDamage;
     }
 
-    
     public int getEffectiveDefense() {
         return defense + getDefenseModifierFromStatuses();
     }
 
-    
     public int getAttack() {
         return attack + getAttackModifierFromStatuses();
     }
 
-    
     public int getBaseAttack() {
         return attack;
     }
@@ -69,9 +65,9 @@ public abstract class Combatant {
     public int getHp() {
         return hp;
     }
-    
-    
-    
+
+
+    // Status effects
 
     public void addStatusEffect(StatusEffect effect) {
         if (effect == null) {
@@ -105,7 +101,7 @@ public abstract class Combatant {
         return Collections.unmodifiableList(statusEffects);
     }
 
-    
+    // To be called at the start of each turn
     public void onTurnStart() {
         List<StatusEffect> snapshot = new ArrayList<>(statusEffects);
 
@@ -116,7 +112,7 @@ public abstract class Combatant {
         cleanupExpiredStatusEffects();
     }
 
-    
+
     public boolean canAct() {
         for (StatusEffect effect : statusEffects) {
             if (!effect.canAct()) {

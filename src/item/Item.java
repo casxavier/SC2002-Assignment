@@ -25,11 +25,11 @@ public abstract class Item {
         return false;
     }
 
-    
+    // For checking if the item requires a target based on the user's class
     public boolean requiresTarget(Player user) {
         return requiresTarget();
     }
 
-    
+    // For duplicating items
     public abstract Item duplicate();
 }

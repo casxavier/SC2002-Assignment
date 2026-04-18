@@ -33,7 +33,7 @@ public abstract class Player extends Combatant {
 
     @Override
     public int takeDamage(int damage) {
-        if (isSmokeActive()) {
+        if (hasStatusEffect(status.SmokeBombEffect.class)) {
             damage = 0;
         }
 
@@ -87,21 +87,6 @@ public abstract class Player extends Combatant {
 
     public void removeItem(Item item) {
         inventory.remove(item);
-    }
-
-    // S
-
-    public boolean isSmokeActive() {
-        return hasStatusEffect(status.SmokeBombEffect.class);
-    }
-
-    public int getSmokeTurns(){
-        for (status.StatusEffect effect : getStatusEffects()) {
-            if (effect instanceof status.SmokeBombEffect) {
-                return ((status.SmokeBombEffect) effect).getRemainingTurns();
-            }
-        }
-        return 0;
     }
 
     // Power Stone Charge

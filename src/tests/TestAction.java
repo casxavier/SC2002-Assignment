@@ -11,7 +11,7 @@ import status.*;
 
 public class TestAction {
 
-    
+
 
     private static int passed = 0;
     private static int failed = 0;
@@ -32,7 +32,7 @@ public class TestAction {
         return new BattleContext(player, list);
     }
 
-    
+
 
     public static void main(String[] args) {
         testActionResult();
@@ -59,7 +59,7 @@ public class TestAction {
         System.out.println("==============================");
     }
 
-    
+
 
     private static void testActionResult() {
         System.out.println("\n=== ActionResult ===");
@@ -76,7 +76,7 @@ public class TestAction {
         check("null message -> empty string", "".equals(nullMsg.getMessage()));
     }
 
-    
+
 
     private static void testBattleContext() {
         System.out.println("\n=== BattleContext ===");
@@ -92,12 +92,12 @@ public class TestAction {
         check("getEnemies() contains g2",           ctx.getEnemies().contains(g2));
     }
 
-    
+
 
     private static void testBasicAttackAction() {
         System.out.println("\n=== BasicAttackAction ===");
 
-        
+
         Warrior warrior = new Warrior("Attacker");
         Goblin goblin   = new Goblin();
         BattleContext ctx = ctx(warrior, goblin);
@@ -111,14 +111,14 @@ public class TestAction {
         check("Goblin HP after attack == 30",       goblin.getHp() == 30);
         check("Result message mentions damage",     result.getMessage().contains("25"));
 
-        
+
         Warrior deadWarrior = new Warrior("Dead");
         deadWarrior.takeDamage(9999);
         BasicAttackAction deadActorAtk = new BasicAttackAction(deadWarrior, goblin);
         check("canExecute() false when actor dead",   !deadActorAtk.canExecute());
         check("blockedReason() mentions actor name",  deadActorAtk.blockedReason().contains("Dead"));
 
-        
+
         Goblin deadGoblin = new Goblin();
         deadGoblin.takeDamage(9999);
         BasicAttackAction deadTargetAtk = new BasicAttackAction(warrior, deadGoblin);
@@ -126,14 +126,14 @@ public class TestAction {
         check("blockedReason() mentions no valid target",
               deadTargetAtk.blockedReason().contains("No valid target"));
 
-        
+
         Warrior stunned = new Warrior("Stunned");
         stunned.addStatusEffect(new Stun());
         BasicAttackAction stunnedAtk = new BasicAttackAction(stunned, goblin);
         check("canExecute() false when actor stunned", !stunnedAtk.canExecute());
     }
 
-    
+
 
     private static void testDefendAction() {
         System.out.println("\n=== DefendAction ===");
@@ -141,7 +141,7 @@ public class TestAction {
         Warrior warrior = new Warrior("Defender");
         BattleContext ctx = ctx(warrior);
 
-        int defBefore = warrior.getEffectiveDefense(); 
+        int defBefore = warrior.getEffectiveDefense();
         check("Base effective defense == 20", defBefore == 20);
 
         DefendAction defend = new DefendAction(warrior);
@@ -153,20 +153,20 @@ public class TestAction {
         check("Effective defense after Defend == 30",     warrior.getEffectiveDefense() == 30);
         check("Has DefendingEffect status",               warrior.hasStatusEffect(DefendingEffect.class));
 
-        
-        warrior.onTurnStart(); 
+
+        warrior.onTurnStart();
         check("Defense still +10 after 1st turn-start",  warrior.getEffectiveDefense() == 30);
-        warrior.onTurnStart(); 
+        warrior.onTurnStart();
         check("Defense back to 20 after effect expires",  warrior.getEffectiveDefense() == 20);
     }
 
-    
+
 
     private static void testItemAction_Potion() {
         System.out.println("\n=== ItemAction – Potion ===");
 
         Warrior warrior = new Warrior("PotionUser");
-        warrior.takeDamage(150);                        
+        warrior.takeDamage(150);
         int hpBeforeHeal = warrior.getHp();
         warrior.addItem(new Potion());
         BattleContext ctx = ctx(warrior);
@@ -181,7 +181,7 @@ public class TestAction {
         check("Message contains healed",          result.getMessage().toLowerCase().contains("heal"));
     }
 
-    
+
 
     private static void testItemAction_SmokeBomb() {
         System.out.println("\n=== ItemAction – SmokeBomb ===");
@@ -190,46 +190,46 @@ public class TestAction {
         warrior.addItem(new SmokeBomb());
         BattleContext ctx = ctx(warrior);
 
-        check("Smoke not active before use",  !warrior.isSmokeActive());
+        check("Smoke not active before use",  !warrior.hasStatusEffect(status.SmokeBombEffect.class));
 
         ItemAction action = new ItemAction(warrior, 0, null);
         ActionResult result = action.execute(ctx);
         check("execute() success",            result.isSuccess());
-        check("Smoke is now active",          warrior.isSmokeActive());
-        check("SmokeTurns == 2",              warrior.getSmokeTurns() == 2);
+        check("Smoke is now active",          warrior.hasStatusEffect(status.SmokeBombEffect.class));
+        // check("SmokeTurns == 2",              warrior.getSmokeTurns() == 2);
         check("Damage blocked while smoked",  warrior.takeDamage(9999) == 0);
         check("SmokeBomb removed from inv",   warrior.getInventory().isEmpty());
 
         warrior.onTurnStart();
-        check("Smoke still active next turn", warrior.isSmokeActive());
-        check("SmokeTurns == 1",              warrior.getSmokeTurns() == 1);
+        check("Smoke still active next turn", warrior.hasStatusEffect(status.SmokeBombEffect.class));
+        // check("SmokeTurns == 1",              warrior.getSmokeTurns() == 1);
         check("Damage blocked on next turn",  warrior.takeDamage(9999) == 0);
 
         warrior.onTurnStart();
-        check("Smoke expires after protected turns", !warrior.isSmokeActive());
+        check("Smoke expires after protected turns", !warrior.hasStatusEffect(status.SmokeBombEffect.class));
         warrior.takeDamage(9999);
         check("Damage after smoke expires",   warrior.getHp() == 0);
     }
 
-    
+
 
     private static void testItemAction_PowerStoneWarrior() {
         System.out.println("\n=== ItemAction – PowerStone (Warrior) ===");
 
         Warrior warrior = new Warrior("PSWarrior");
-        
-        warrior.consumeSpecialSkillUse(); 
+
+        warrior.consumeSpecialSkillUse();
         check("Pre-condition: special on cooldown", !warrior.canUseSpecialSkill());
 
         Goblin goblin = new Goblin();
         warrior.addItem(new PowerStone());
         BattleContext ctx = ctx(warrior, goblin);
 
-        
+
         ItemAction noTarget = new ItemAction(warrior, 0, null);
         check("canExecute() false when Warrior+PS target==null", !noTarget.canExecute());
 
-        
+
         ItemAction withTarget = new ItemAction(warrior, 0, goblin);
         check("canExecute() true with living target", withTarget.canExecute());
 
@@ -238,17 +238,17 @@ public class TestAction {
         check("Goblin damaged (HP < 55)",           goblin.getHp() < 55);
         check("Goblin has Stun after Shield Bash",  goblin.hasStatusEffect(Stun.class));
         check("PowerStone removed from inventory",  warrior.getInventory().isEmpty());
-        
+
         check("Cooldown still 3 (stone charge used)", warrior.getSpecialSkillCooldown() == 3);
     }
 
-    
+
 
     private static void testItemAction_PowerStoneWizard() {
         System.out.println("\n=== ItemAction – PowerStone (Wizard) ===");
 
         Wizard wizard = new Wizard("PSWizard");
-        wizard.consumeSpecialSkillUse(); 
+        wizard.consumeSpecialSkillUse();
         check("Pre-condition: special on cooldown", !wizard.canUseSpecialSkill());
 
         Goblin g1 = new Goblin();
@@ -256,7 +256,7 @@ public class TestAction {
         wizard.addItem(new PowerStone());
         BattleContext ctx = ctx(wizard, g1, g2);
 
-        
+
         ItemAction action = new ItemAction(wizard, 0, null);
         check("canExecute() true for Wizard without target", action.canExecute());
 
@@ -268,7 +268,7 @@ public class TestAction {
         check("PowerStone removed",      wizard.getInventory().isEmpty());
     }
 
-    
+
 
     private static void testItemAction_InvalidIndex() {
         System.out.println("\n=== ItemAction – Invalid Index ===");
@@ -287,7 +287,7 @@ public class TestAction {
         check("Fail message mentions invalid", result.getMessage().contains("Invalid"));
     }
 
-    
+
 
     private static void testItemAction_BlockedWhenDead() {
         System.out.println("\n=== ItemAction – Blocked When Dead ===");
@@ -301,7 +301,7 @@ public class TestAction {
         check("canExecute() false when actor dead", !action.canExecute());
     }
 
-    
+
 
     private static void testSpecialSkillAction_ShieldBash() {
         System.out.println("\n=== SpecialSkillAction – ShieldBash ===");
@@ -321,23 +321,23 @@ public class TestAction {
         check("Message mentions Shield Bash",   result.getMessage().contains("Shield Bash"));
         check("Warrior cooldown set to 3",      warrior.getSpecialSkillCooldown() == 3);
 
-        
+
         SpecialSkillAction cooldownSsa = new SpecialSkillAction(warrior, goblin);
         check("canExecute() false while on cooldown", !cooldownSsa.canExecute());
     }
 
-    
+
 
     private static void testSpecialSkillAction_ArcaneBlast() {
         System.out.println("\n=== SpecialSkillAction – ArcaneBlast ===");
 
         Wizard wizard = new Wizard("BlastWizard");
-        Goblin g1 = new Goblin(); 
+        Goblin g1 = new Goblin();
         Goblin g2 = new Goblin();
-        Wolf   wolf = new Wolf(); 
+        Wolf   wolf = new Wolf();
         BattleContext ctx = ctx(wizard, g1, g2, wolf);
 
-        SpecialSkillAction ssa = new SpecialSkillAction(wizard, null); 
+        SpecialSkillAction ssa = new SpecialSkillAction(wizard, null);
         check("canExecute() true for Wizard w/o target", ssa.canExecute());
 
         ActionResult result = ssa.execute(ctx);
@@ -351,7 +351,7 @@ public class TestAction {
         check("Wizard effective attack == 60",      wizard.getAttack() == 60);
     }
 
-    
+
 
     private static void testSpecialSkillAction_Cooldown() {
         System.out.println("\n=== SpecialSkillAction – Cooldown Ticks ===");
@@ -360,15 +360,15 @@ public class TestAction {
         Goblin goblin = new Goblin();
         BattleContext ctx = ctx(warrior, goblin);
 
-        
+
         new SpecialSkillAction(warrior, goblin).execute(ctx);
         check("Cooldown == 3 after first use", warrior.getSpecialSkillCooldown() == 3);
 
-        warrior.onTurnStart(); 
+        warrior.onTurnStart();
         check("Cooldown == 2 after 1 turn",    warrior.getSpecialSkillCooldown() == 2);
-        warrior.onTurnStart(); 
+        warrior.onTurnStart();
         check("Cooldown == 1 after 2 turns",   warrior.getSpecialSkillCooldown() == 1);
-        warrior.onTurnStart(); 
+        warrior.onTurnStart();
         check("Cooldown == 0 after 3 turns",   warrior.getSpecialSkillCooldown() == 0);
 
         Goblin freshGoblin = new Goblin();
@@ -376,7 +376,7 @@ public class TestAction {
         check("canExecute() true again after cooldown expires", readySsa.canExecute());
     }
 
-    
+
 
     private static void testSpecialSkillAction_BlockedByStun() {
         System.out.println("\n=== SpecialSkillAction – Blocked By Stun ===");
@@ -389,21 +389,21 @@ public class TestAction {
         check("canExecute() false when stunned", !ssa.canExecute());
     }
 
-    
+
 
     private static void testSpecialSkillAction_BlockedReason() {
         System.out.println("\n=== SpecialSkillAction – blockedReason ===");
 
-        
+
         Warrior warrior = new Warrior("BRWarrior");
-        warrior.consumeSpecialSkillUse(); 
+        warrior.consumeSpecialSkillUse();
         Goblin goblin = new Goblin();
         SpecialSkillAction onCooldown = new SpecialSkillAction(warrior, goblin);
         String reason = onCooldown.blockedReason();
         check("blockedReason contains 'cooldown' or player name",
               reason.contains("cooldown") || reason.contains("BRWarrior"));
 
-        
+
         Warrior warrior2 = new Warrior("BRWarrior2");
         Goblin deadGoblin = new Goblin();
         deadGoblin.takeDamage(9999);
@@ -412,7 +412,7 @@ public class TestAction {
         check("blockedReason mentions living enemy required",
               reason2.contains("living") || reason2.contains("Shield Bash"));
 
-        
+
         Warrior deadWarrior = new Warrior("DeadWarrior");
         deadWarrior.takeDamage(9999);
         SpecialSkillAction deadActor = new SpecialSkillAction(deadWarrior, goblin);
@@ -421,7 +421,7 @@ public class TestAction {
               reason3.contains("DeadWarrior"));
     }
 
-    
+
 
     private static void testPlayerSpecialSkills_forPlayer() {
         System.out.println("\n=== PlayerSpecialSkills.forPlayer ===");
@@ -432,10 +432,10 @@ public class TestAction {
         check("Warrior → ShieldBashSkill",  PlayerSpecialSkills.forPlayer(warrior) == ShieldBashSkill.INSTANCE);
         check("Wizard  → ArcaneBlastSkill", PlayerSpecialSkills.forPlayer(wizard)  == ArcaneBlastSkill.INSTANCE);
 
-        
+
         boolean threw = false;
         try {
-            
+
             Player unknown = new Player("Unknown", 100, 10, 5, 5) {};
             PlayerSpecialSkills.forPlayer(unknown);
         } catch (IllegalArgumentException e) {
@@ -444,7 +444,7 @@ public class TestAction {
         check("Unknown player type throws IllegalArgumentException", threw);
     }
 
-    
+
 
     private static void testShieldBashSkillDirect() {
         System.out.println("\n=== ShieldBashSkill (direct) ===");
@@ -455,7 +455,7 @@ public class TestAction {
 
         check("canUse() true initially",          ShieldBashSkill.INSTANCE.canUse(warrior));
 
-        
+
         ActionResult result = ShieldBashSkill.INSTANCE.execute(warrior, ctx, goblin);
         check("execute() success",                result.isSuccess());
         check("Goblin damaged",                   goblin.getHp() < 55);
@@ -463,35 +463,35 @@ public class TestAction {
         check("Cooldown set after use",           warrior.getSpecialSkillCooldown() == 3);
         check("canUse() false after use",         !ShieldBashSkill.INSTANCE.canUse(warrior));
 
-        
+
         Warrior warrior2 = new Warrior("W2");
         ActionResult nullTargetResult = ShieldBashSkill.INSTANCE.execute(warrior2, ctx, null);
         check("Null target → fail", !nullTargetResult.isSuccess());
 
-        
+
         Goblin deadGoblin = new Goblin();
         deadGoblin.takeDamage(9999);
         ActionResult deadTargetResult = ShieldBashSkill.INSTANCE.execute(warrior2, ctx, deadGoblin);
         check("Dead target → fail", !deadTargetResult.isSuccess());
 
-        
+
         Warrior cooldownWarrior = new Warrior("CooldownWarrior");
         cooldownWarrior.consumeSpecialSkillUse();
         ActionResult cooldownResult = ShieldBashSkill.INSTANCE.execute(cooldownWarrior, ctx, goblin);
         check("On cooldown → fail", !cooldownResult.isSuccess());
     }
 
-    
+
 
     private static void testArcaneBlastSkillDirect() {
         System.out.println("\n=== ArcaneBlastSkill (direct) ===");
 
         Wizard wizard = new Wizard("DirectWizard");
-        Goblin g1 = new Goblin(); 
+        Goblin g1 = new Goblin();
         Goblin g2 = new Goblin();
-        Wolf   wolf = new Wolf(); 
+        Wolf   wolf = new Wolf();
         Goblin deadGoblin = new Goblin();
-        deadGoblin.takeDamage(9999);                  
+        deadGoblin.takeDamage(9999);
         BattleContext ctx = ctx(wizard, g1, g2, wolf, deadGoblin);
 
         check("canUse() true initially", ArcaneBlastSkill.INSTANCE.canUse(wizard));
@@ -506,23 +506,23 @@ public class TestAction {
         check("Attack bonus == 10 (+10/kill)", ArcaneBlastEffect.getOn(wizard).getAttackModifier() == 10);
         check("canUse() false after use",      !ArcaneBlastSkill.INSTANCE.canUse(wizard));
 
-        
+
         Wizard wizard2 = new Wizard("W2");
-        Wolf w1 = new Wolf(); 
-        Wolf w2 = new Wolf(); 
+        Wolf w1 = new Wolf();
+        Wolf w2 = new Wolf();
         BattleContext ctx2 = ctx(wizard2, w1, w2);
         ArcaneBlastSkill.INSTANCE.execute(wizard2, ctx2, null);
         check("2 kills → +20 bonus",           ArcaneBlastEffect.getOn(wizard2).getAttackModifier()  == 20);
 
-        
+
         Warrior warrior = new Warrior("NonWizard");
         Goblin target = new Goblin();
         BattleContext ctx3 = ctx(warrior, target);
         ActionResult wrongActor = ArcaneBlastSkill.INSTANCE.execute(warrior, ctx3, null);
-        
+
         check("Non-Wizard actor → fail", !wrongActor.isSuccess());
 
-        
+
         Wizard onCooldown = new Wizard("CDWizard");
         onCooldown.consumeSpecialSkillUse();
         Goblin g = new Goblin();

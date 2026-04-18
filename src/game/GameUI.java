@@ -235,12 +235,6 @@ public final class GameUI {
             System.out.println("Inventory: (empty)");
         }
 
-        if (player.isSmokeActive()) {
-            System.out.printf("Smoke Bomb Effect: %d turn%s remaining%n",
-                    player.getSmokeTurns(),
-                    player.getSmokeTurns() == 1 ? "" : "s");
-        }
-
         System.out.printf("Special Skill Cooldown: %d%n", player.getSpecialSkillCooldown());
         System.out.println("--------------------------------------");
         System.out.println();
