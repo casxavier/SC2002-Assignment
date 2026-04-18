@@ -22,6 +22,30 @@ public class GameSettings {
         this.player = player;
     }
 
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public void setStartingItemTemplate(List<Item> template) {
+        this.startingItemTemplate = template != null ? new ArrayList<>(template) : new ArrayList<>();
+    }
+
+    public List<Item> getStartingItemTemplate() {
+        return Collections.unmodifiableList(startingItemTemplate);
+    }
+
     public static List<String> getAvailablePlayerTypes() {
         return new ArrayList<>(DeveloperConfig.PLAYER_REGISTRY.keySet());
     }
@@ -60,30 +84,6 @@ public class GameSettings {
 
     public static int getMaxItemChoices() {
         return DeveloperConfig.ITEM_REGISTRY.size();
-    }
-
-    public Difficulty getDifficulty() {
-        return difficulty;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setDifficulty(Difficulty difficulty) {
-        this.difficulty = difficulty;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    public void setStartingItemTemplate(List<Item> template) {
-        this.startingItemTemplate = template != null ? new ArrayList<>(template) : new ArrayList<>();
-    }
-
-    public List<Item> getStartingItemTemplate() {
-        return Collections.unmodifiableList(startingItemTemplate);
     }
 
     public List<Map<String, String>> getInitialWaveConfig() {
