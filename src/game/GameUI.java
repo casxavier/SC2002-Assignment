@@ -3,7 +3,7 @@ package game;
 import combatant.*;
 import item.*;
 import status.Stun;
-import game.GameSettings.Difficulty;
+import game.DeveloperConfig.Difficulty;
 
 import java.util.LinkedHashMap;
 import java.util.List;

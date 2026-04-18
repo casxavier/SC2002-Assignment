@@ -8,21 +8,17 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class GameSettings {
-    public enum Difficulty {
-        EASY, MEDIUM, HARD
-    }
-
-    private Difficulty difficulty;
+    private DeveloperConfig.Difficulty difficulty;
     private Player player;
 
     private List<Item> startingItemTemplate = new ArrayList<>();
 
-    public GameSettings(Difficulty difficulty, Player player) {
+    public GameSettings(DeveloperConfig.Difficulty difficulty, Player player) {
         this.difficulty = difficulty;
         this.player = player;
     }
 
-    public Difficulty getDifficulty() {
+    public DeveloperConfig.Difficulty getDifficulty() {
         return difficulty;
     }
 
@@ -30,7 +26,7 @@ public class GameSettings {
         return player;
     }
 
-    public void setDifficulty(Difficulty difficulty) {
+    public void setDifficulty(DeveloperConfig.Difficulty difficulty) {
         this.difficulty = difficulty;
     }
 

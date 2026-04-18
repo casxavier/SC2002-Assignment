@@ -3,7 +3,7 @@ package game;
 import action.ArcaneBlastSkill;
 import combatant.*;
 import item.*;
-import game.GameSettings.Difficulty;
+import game.DeveloperConfig.Difficulty;
 
 import java.util.ArrayList;
 import java.util.List;

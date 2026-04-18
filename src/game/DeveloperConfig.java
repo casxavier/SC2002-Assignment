@@ -6,10 +6,14 @@ import item.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import game.GameSettings.Difficulty;
+
 
 // Developer settings for all game registries and configurations.
 public class DeveloperConfig {
+    public enum Difficulty {
+        EASY, MEDIUM, HARD
+    }
+
     public static final Map<String, Function<String, Player>> PLAYER_REGISTRY = new LinkedHashMap<>();
     public static final Map<String, Supplier<Item>> ITEM_REGISTRY = new LinkedHashMap<>();
     public static final Map<String, Function<String, Enemy>> ENEMY_REGISTRY = new LinkedHashMap<>();

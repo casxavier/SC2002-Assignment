@@ -50,7 +50,7 @@ public abstract class Player extends Combatant {
         }
     }
 
-
+     // Special Skill
 
     public boolean canUseSpecialSkill() {
         return specialSkillCooldown == 0 || hasPowerStoneCharge;
@@ -70,7 +70,7 @@ public abstract class Player extends Combatant {
 
     public abstract SpecialSkill getSpecialSkill();
 
-    // Special Skill
+    // Inventory
 
     public List<Item> getInventory() {
         return Collections.unmodifiableList(inventory);
