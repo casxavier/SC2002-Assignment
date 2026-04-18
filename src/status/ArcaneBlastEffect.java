@@ -39,13 +39,5 @@ public class ArcaneBlastEffect implements StatusEffect {
         return false;
     }
 
-    // Function to get the ArcaneBlastEffect from a target, if any
-    public static ArcaneBlastEffect getOn(Combatant target) {
-        for (StatusEffect effect : target.getStatusEffects()) {
-            if (effect instanceof ArcaneBlastEffect) {
-                return (ArcaneBlastEffect) effect;
-            }
-        }
-        return null;
-    }
+
 }

@@ -7,6 +7,7 @@ import combatant.Combatant;
 import combatant.Player;
 import combatant.Wizard;
 import status.ArcaneBlastEffect;
+import status.StatusEffect;
 
 
 public final class ArcaneBlastSkill implements SpecialSkill {
@@ -67,7 +68,13 @@ public final class ArcaneBlastSkill implements SpecialSkill {
         if (enemiesDefeated <= 0) {
             return;
         }
-        ArcaneBlastEffect effect = ArcaneBlastEffect.getOn(wizard);
+        ArcaneBlastEffect effect = null;
+        for (StatusEffect se : wizard.getStatusEffects()) {
+            if (se instanceof ArcaneBlastEffect) {
+                effect = (ArcaneBlastEffect) se;
+                break;
+            }
+        }
         if (effect == null) {
             effect = new ArcaneBlastEffect();
             wizard.addStatusEffect(effect);
