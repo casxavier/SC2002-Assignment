@@ -220,7 +220,7 @@ public class Gameflow {
         return factory.apply(name);
     }
 
-    public static Player createPlayer(String type, String name) {
+    private static Player createPlayer(String type, String name) {
         java.util.function.Function<String, Player> factory = GameSettings.getPlayerFactory(type);
         if (factory == null) {
             System.err.println("Unknown player type: " + type);
@@ -229,7 +229,7 @@ public class Gameflow {
         return factory.apply(name);
     }
 
-    public static Item createItem(String type) {
+    private static Item createItem(String type) {
         java.util.function.Supplier<Item> factory = GameSettings.getItemFactory(type);
         if (factory == null) {
             System.err.println("Unknown item type: " + type);
