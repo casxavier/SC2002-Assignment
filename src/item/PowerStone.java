@@ -3,7 +3,6 @@ package item;
 import combatant.Combatant;
 import combatant.Player;
 import action.BattleContext;
-import action.PlayerSpecialSkills;
 import action.SpecialSkill;
 import action.ActionResult;
 
@@ -16,7 +15,7 @@ public class PowerStone extends Item {
     @Override
     public String use(Player user, BattleContext ctx) {
         user.grantPowerStoneCharge();
-        SpecialSkill skill = PlayerSpecialSkills.forPlayer(user);
+        SpecialSkill skill = user.getSpecialSkill();
         ActionResult skillResult = skill.execute(user, ctx, null);
 
         if (!skillResult.isSuccess()) {
@@ -29,7 +28,7 @@ public class PowerStone extends Item {
     @Override
     public String useWithTarget(Player user, BattleContext ctx, Combatant target) {
         user.grantPowerStoneCharge();
-        SpecialSkill skill = PlayerSpecialSkills.forPlayer(user);
+        SpecialSkill skill = user.getSpecialSkill();
         ActionResult skillResult = skill.execute(user, ctx, target);
 
         if (!skillResult.isSuccess()) {
@@ -46,7 +45,7 @@ public class PowerStone extends Item {
 
     @Override
     public boolean requiresTarget(Player user) {
-        SpecialSkill skill = PlayerSpecialSkills.forPlayer(user);
+        SpecialSkill skill = user.getSpecialSkill();
         return skill.requiresTarget();
     }
 

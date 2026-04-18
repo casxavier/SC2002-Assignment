@@ -64,7 +64,7 @@ public class Turn {
                     break;
 
                 case 4:
-                    SpecialSkill skill = PlayerSpecialSkills.forPlayer(player);
+                    SpecialSkill skill = player.getSpecialSkill();
                     if (skill.requiresTarget()) {
                         if (enemies.isEmpty()) {
                             GameUI.printNoValidTargets();

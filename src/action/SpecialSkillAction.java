@@ -19,10 +19,10 @@ public class SpecialSkillAction extends Action {
             return false;
         }
         Player player = (Player) actor;
-        if (!super.canExecute() || !PlayerSpecialSkills.forPlayer(player).canUse(player)) {
+        if (!super.canExecute() || !player.getSpecialSkill().canUse(player)) {
             return false;
         }
-        SpecialSkill skill = PlayerSpecialSkills.forPlayer(player);
+        SpecialSkill skill = player.getSpecialSkill();
         if (skill.requiresTarget()) {
             return target != null && target.isAlive();
         }
@@ -39,10 +39,10 @@ public class SpecialSkillAction extends Action {
         if (!base.isEmpty()) {
             return base;
         }
-        if (!PlayerSpecialSkills.forPlayer(player).canUse(player)) {
+        if (!player.getSpecialSkill().canUse(player)) {
             return player.getName() + "'s special skill is on cooldown.";
         }
-        SpecialSkill skill = PlayerSpecialSkills.forPlayer(player);
+        SpecialSkill skill = player.getSpecialSkill();
         if (skill.requiresTarget() && (target == null || !target.isAlive())) {
             return "This skill requires a living enemy.";
         }
@@ -52,7 +52,7 @@ public class SpecialSkillAction extends Action {
     @Override
     public ActionResult execute(BattleContext ctx) {
         Player player = (Player) actor;
-        SpecialSkill skill = PlayerSpecialSkills.forPlayer(player);
+        SpecialSkill skill = player.getSpecialSkill();
         return skill.execute(player, ctx, target);
     }
 }

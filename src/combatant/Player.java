@@ -1,5 +1,6 @@
 package combatant;
 
+import action.SpecialSkill;
 import item.Item;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,8 @@ public abstract class Player extends Combatant {
     public int getSpecialSkillCooldown() {
         return specialSkillCooldown;
     }
+
+    public abstract SpecialSkill getSpecialSkill();
 
     // Special Skill
 
