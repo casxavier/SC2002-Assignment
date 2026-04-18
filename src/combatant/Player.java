@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Collections;
 
 public abstract class Player extends Combatant {
-    protected int maxHp;
+    private int maxHp;
 
-    protected List<Item> inventory = new ArrayList<>();
+    private List<Item> inventory = new ArrayList<>();
     private int specialSkillCooldown;
     private final int defaultSpecialSkillCooldown = 3;
     private boolean hasPowerStoneCharge;
