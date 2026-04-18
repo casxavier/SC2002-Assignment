@@ -24,6 +24,7 @@ public class ItemAction extends Action {
             return false;
         }
         Item item = player.getInventory().get(itemIndex);
+        // Only validate target if item actually needs one
         if (item.requiresTarget(player)) {
             return target != null && target.isAlive();
         }

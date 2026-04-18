@@ -34,6 +34,7 @@ public abstract class Player extends Combatant {
 
     @Override
     public int takeDamage(int damage) {
+        // Smoke bomb nullifies all damage
         if (hasStatusEffect(status.SmokeBombEffect.class)) {
             damage = 0;
         }
@@ -45,6 +46,7 @@ public abstract class Player extends Combatant {
     public void onTurnStart() {
         super.onTurnStart();
 
+        // Don't tick cooldown if stunned or otherwise blocked
         if (canAct() && specialSkillCooldown > 0) {
             specialSkillCooldown--;
         }

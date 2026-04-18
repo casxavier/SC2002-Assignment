@@ -35,6 +35,7 @@ public final class ArcaneBlastSkill implements SpecialSkill {
             return ActionResult.fail(player.getName() + " cannot use Arcane Blast right now.");
         }
         Wizard wizard = (Wizard) player;
+        // Snapshot to avoid issues if enemies die mid-loop
         List<Combatant> snapshot = new ArrayList<>(ctx.getEnemies());
         int kills = 0;
         StringBuilder detail = new StringBuilder();
@@ -52,6 +53,7 @@ public final class ArcaneBlastSkill implements SpecialSkill {
                     atk,
                     enemy.getDefense(),
                     enemy.getHp()));
+            // Only count if this action killed them
             if (wasAlive && !enemy.isAlive()) {
                 kills++;
             }
@@ -64,10 +66,12 @@ public final class ArcaneBlastSkill implements SpecialSkill {
     }
 
     
+    // Track cumulative kills for arcane blast bonus effect
     public static void registerArcaneBlastDefeats(Wizard wizard, int enemiesDefeated) {
         if (enemiesDefeated <= 0) {
             return;
         }
+        // Find or create effect to accumulate kills
         ArcaneBlastEffect effect = null;
         for (StatusEffect se : wizard.getStatusEffects()) {
             if (se instanceof ArcaneBlastEffect) {

@@ -24,6 +24,7 @@ public class Gameflow {
 
 
     public Gameflow(Combatant player, Difficulty difficulty, TurnOrderStrategy turnOrderStrategy) {
+        // Save old item template if replaying, else use current inventory
         List<Item> preservedTemplate = null;
         if (gameSettings != null && !gameSettings.getStartingItemTemplate().isEmpty()) {
             preservedTemplate = new ArrayList<>(gameSettings.getStartingItemTemplate());
@@ -104,6 +105,7 @@ public class Gameflow {
                 break;
             }
 
+            // Remove dead enemies (i-- because list shrinks after remove)
             for (int i = 0; i < enemies.size(); i++) {
                 if (!enemies.get(i).isAlive()) {
                     deadEnemies.add(enemies.get(i));
@@ -118,6 +120,7 @@ public class Gameflow {
             turnCount++;
             history.add(currentTurn);
 
+            // Spawn backup wave once when all initial enemies dead
             if (!backupSpawned && enemies.size() == 0) {
                 spawnBackupWave();
                 backupSpawned = true;
@@ -160,6 +163,7 @@ public class Gameflow {
                 String playerType = currentPlayer.getClass().getSimpleName().toUpperCase();
                 Player replayPlayer = createPlayer(playerType, currentPlayer.getName());
 
+                // Restore initial items (not current inventory which has consumed items)
                 for (Item item : copyItemsAsNew(gameSettings.getStartingItemTemplate())) {
                     replayPlayer.addItem(item);
                 }

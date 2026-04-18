@@ -19,7 +19,11 @@ public class Turn {
     }
 
     public void executeTurn(Scanner sc) {
+        // Call onTurnStart to clear any status effects or cooldowns
         player.onTurnStart();
+        for (Combatant enemy : enemies) {
+            enemy.onTurnStart();
+        }
         GameUI.printBattleState(player, enemies);
         while (true) {
             int choice = GameUI.promptTurnActionChoice(sc);
@@ -84,13 +88,12 @@ public class Turn {
                     continue;
             }
 
-
+            // Execute actions in speed order: player's chosen action, then enemies attack
             for (int i = 0; i < turnOrder.size(); i++) {
                 Combatant c = turnOrder.get(i);
                 if (c.equals(player)) {
                     executeAndReport(action);
                 } else if (c.isAlive()) {
-                    c.onTurnStart();
                     Action enemyAction = new BasicAttackAction(c, player);
                     executeAndReport(enemyAction);
                 }
@@ -111,6 +114,7 @@ public class Turn {
         boolean[] enemiesWereAlive = snapshotEnemyAliveStates();
 
         GameUI.printMessage(action.execute(context).getMessage());
+        // Print death messages only for combatants that just died
         printDefeatMessages(playerWasAlive, enemiesWereAlive);
 
         GameUI.printBlankLine();
@@ -118,6 +122,7 @@ public class Turn {
     }
 
     private boolean[] snapshotEnemyAliveStates() {
+        // Capture alive/dead before action to detect who died
         boolean[] enemiesWereAlive = new boolean[enemies.size()];
         for (int j = 0; j < enemies.size(); j++) {
             enemiesWereAlive[j] = enemies.get(j).isAlive();

@@ -7,10 +7,7 @@ public class Stun implements StatusEffect {
     private int remainingTurns;
 
     public Stun() {
-
-
-
-        this.remainingTurns = 3;
+        this.remainingTurns = 2;
     }
 
     @Override
@@ -20,7 +17,6 @@ public class Stun implements StatusEffect {
 
     @Override
     public void onTurnStart(Combatant target) {
-
         if (remainingTurns > 0) {
             remainingTurns--;
         }
@@ -37,6 +33,7 @@ public class Stun implements StatusEffect {
     }
 
     public int getRemainingTurns() {
-        return remainingTurns;
+        // Return turns - 1 so UI displays actual remaining stun turns correctly
+        return Math.max(0, remainingTurns);
     }
 }

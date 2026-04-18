@@ -23,6 +23,7 @@ public class SpecialSkillAction extends Action {
             return false;
         }
         SpecialSkill skill = player.getSpecialSkill();
+        // Only validate target if skill needs one
         if (skill.requiresTarget()) {
             return target != null && target.isAlive();
         }
@@ -43,6 +44,7 @@ public class SpecialSkillAction extends Action {
             return player.getName() + "'s special skill is on cooldown.";
         }
         SpecialSkill skill = player.getSpecialSkill();
+        // Skills requiring targets fail if target is dead or missing
         if (skill.requiresTarget() && (target == null || !target.isAlive())) {
             return "This skill requires a living enemy.";
         }

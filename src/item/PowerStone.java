@@ -14,6 +14,7 @@ public class PowerStone extends Item {
 
     @Override
     public String use(Player user, BattleContext ctx) {
+        // Grant charge then immediately cast skill
         user.grantPowerStoneCharge();
         SpecialSkill skill = user.getSpecialSkill();
         ActionResult skillResult = skill.execute(user, ctx, null);
@@ -45,6 +46,7 @@ public class PowerStone extends Item {
 
     @Override
     public boolean requiresTarget(Player user) {
+        // Inherits target requirement from the skill this item will cast
         SpecialSkill skill = user.getSpecialSkill();
         return skill.requiresTarget();
     }

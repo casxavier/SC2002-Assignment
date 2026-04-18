@@ -103,6 +103,7 @@ public abstract class Combatant {
 
     // To be called at the start of each turn
     public void onTurnStart() {
+        // Snapshot avoids concurrent modification when effects remove themselves
         List<StatusEffect> snapshot = new ArrayList<>(statusEffects);
 
         for (StatusEffect effect : snapshot) {
@@ -139,6 +140,7 @@ public abstract class Combatant {
     }
 
     private void cleanupExpiredStatusEffects() {
+        // Use iterator.remove() to safely modify list during iteration
         Iterator<StatusEffect> iterator = statusEffects.iterator();
         while (iterator.hasNext()) {
             StatusEffect effect = iterator.next();

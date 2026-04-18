@@ -17,6 +17,7 @@ public class DefendingEffect implements StatusEffect {
 
     @Override
     public int getDefenseModifier() {
+        // Defense applied before onTurnStart decrement, so bonus active for 2 full turns
         return roundsRemaining > 0 ? 10 : 0;
     }
 
