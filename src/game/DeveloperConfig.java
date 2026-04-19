@@ -73,10 +73,10 @@ public class DeveloperConfig {
 
         // Backup Wave
 
-        mediumBackup.add(createEnemyConfig("WOLF", "Wolf A"));
         mediumBackup.add(createEnemyConfig("WOLF", "Wolf B"));
+        mediumBackup.add(createEnemyConfig("WOLF", "Wolf C"));
 
-        hardBackup.add(createEnemyConfig("GOBLIN", "Goblin A"));
+        hardBackup.add(createEnemyConfig("GOBLIN", "Goblin C"));
         hardBackup.add(createEnemyConfig("WOLF", "Wolf A"));
         hardBackup.add(createEnemyConfig("WOLF", "Wolf B"));
 
