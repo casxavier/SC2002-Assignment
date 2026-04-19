@@ -117,12 +117,7 @@ public class Gameflow {
 
             Player currPlayer = gameSettings.getPlayer();
             GameUI.printRoundSummary(turnCount, currPlayer, enemies, deadEnemies);
-            
-            // Decrement cooldown after round summary, unless PowerStone was used
-            if (!(playerAction instanceof ItemAction && ((ItemAction) playerAction).usedPowerStone())) {
-                player.decrementSpecialSkillCooldown();
-            }
-            
+
             GameUI.waitBetweenRounds();
             turnCount++;
             history.add(currentTurn);

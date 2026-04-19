@@ -39,6 +39,7 @@ public abstract class Player extends Combatant {
 
     @Override
     public void onTurnStart() {
+        decrementSpecialSkillCooldown();
         super.onTurnStart();
     }
 
@@ -48,6 +49,10 @@ public abstract class Player extends Combatant {
         if (specialSkillCooldown > 0) {
             specialSkillCooldown--;
         }
+    }
+
+    public void incrementSpecialSkillCooldown(int amount) {
+        specialSkillCooldown += amount;
     }
 
     public boolean canUseSpecialSkill() {

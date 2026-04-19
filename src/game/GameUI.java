@@ -202,7 +202,7 @@ public final class GameUI {
                 "HP: " + player.getHp() + "/" + player.getMaxHp(),
                 "ATK: " + player.getAttack() + " | DEF: " + player.getEffectiveDefense(),
                 "SPD: " + player.getSpeed(),
-                "Special Skill CD: " + player.getSpecialSkillCooldown(),
+                "Can use special skill: " + (player.getSpecialSkillCooldown() <= 1),
                 getStatusEffectsString(player),
         };
         String[] leftBlock = buildCombatantBlock(playerArt, playerInfo, BATTLE_BLOCK_WIDTH);
@@ -514,7 +514,7 @@ public final class GameUI {
                 }
             }
         }
-        
+
         if (effectStrings.isEmpty()) {
             return "";
         }

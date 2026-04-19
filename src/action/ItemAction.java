@@ -9,7 +9,7 @@ public class ItemAction extends Action {
 
     private final Player player;
     private final int itemIndex;
-    
+
     private final Combatant target;
     private Item executedItem; // Track which item was used
 
@@ -51,7 +51,7 @@ public class ItemAction extends Action {
         return ActionResult.ok(msg);
     }
 
-    public boolean usedPowerStone() {
-        return executedItem instanceof PowerStone;
+    public Item getCurrentItem() {
+        return player.getInventory().get(itemIndex);
     }
 }

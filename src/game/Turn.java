@@ -3,6 +3,7 @@ package game;
 import action.*;
 import combatant.*;
 import item.Item;
+import item.PowerStone;
 import java.util.List;
 import java.util.Scanner;
 
@@ -83,6 +84,12 @@ public class Turn {
 
                 default:
                     continue;
+            }
+
+            // Decrement cooldown, unless PowerStone was used
+            if (action instanceof ItemAction &&
+                ((ItemAction) action).getCurrentItem() instanceof PowerStone) {
+                player.incrementSpecialSkillCooldown(1);
             }
 
             // Execute actions in speed order: player's chosen action, then enemies attack
