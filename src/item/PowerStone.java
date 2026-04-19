@@ -15,7 +15,7 @@ public class PowerStone extends Item {
     @Override
     public String use(Player user, BattleContext ctx) {
         // Grant charge then immediately cast skill
-        user.grantPowerStoneCharge();
+        user.grantSpecialSkillCharge();
         SpecialSkill skill = user.getSpecialSkill();
         ActionResult skillResult = skill.execute(user, ctx, null);
 
@@ -28,7 +28,7 @@ public class PowerStone extends Item {
 
     @Override
     public String useWithTarget(Player user, BattleContext ctx, Combatant target) {
-        user.grantPowerStoneCharge();
+        user.grantSpecialSkillCharge();
         SpecialSkill skill = user.getSpecialSkill();
         ActionResult skillResult = skill.execute(user, ctx, target);
 

@@ -13,13 +13,13 @@ public abstract class Player extends Combatant {
     private List<Item> inventory = new ArrayList<>();
     private int specialSkillCooldown;
     private final int defaultSpecialSkillCooldown = 3;
-    private boolean hasPowerStoneCharge;
+    private boolean hasSpecialSkillCharge;
 
     public Player(String name, int hp, int attack, int defense, int speed) {
         super(name, hp, attack, defense, speed);
         this.maxHp = hp;
         this.specialSkillCooldown = 0;
-        this.hasPowerStoneCharge = false;
+        this.hasSpecialSkillCharge = false;
     }
 
     public int getMaxHp(){
@@ -51,12 +51,12 @@ public abstract class Player extends Combatant {
     }
 
     public boolean canUseSpecialSkill() {
-        return specialSkillCooldown == 0 || hasPowerStoneCharge;
+        return specialSkillCooldown == 0 || hasSpecialSkillCharge;
     }
 
     public void consumeSpecialSkillUse() {
-        if (hasPowerStoneCharge) {
-            hasPowerStoneCharge = false;
+        if (hasSpecialSkillCharge) {
+            hasSpecialSkillCharge = false;
         } else {
             specialSkillCooldown = defaultSpecialSkillCooldown;
         }
@@ -67,6 +67,10 @@ public abstract class Player extends Combatant {
     }
 
     public abstract SpecialSkill getSpecialSkill();
+
+    public void grantSpecialSkillCharge() {
+        hasSpecialSkillCharge = true;
+    }
 
     // Inventory
 
@@ -90,9 +94,4 @@ public abstract class Player extends Combatant {
         inventory.remove(item);
     }
 
-    // Power Stone Charge
-
-    public void grantPowerStoneCharge() {
-        hasPowerStoneCharge = true;
-    }
 }
