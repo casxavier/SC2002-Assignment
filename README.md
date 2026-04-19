@@ -31,8 +31,7 @@ javac -d out src/Main.java \
           src/combatant/*.java \
           src/action/*.java \
           src/item/*.java \
-          src/status/*.java \
-          src/tests/*.java
+          src/status/*.java 
 ```
 
 ---
