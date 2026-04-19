@@ -3,6 +3,7 @@ package action;
 import combatant.Combatant;
 import combatant.Player;
 import item.Item;
+import item.PowerStone;
 
 public class ItemAction extends Action {
 
@@ -10,6 +11,7 @@ public class ItemAction extends Action {
     private final int itemIndex;
     
     private final Combatant target;
+    private Item executedItem; // Track which item was used
 
     public ItemAction(Player actor, int itemIndex, Combatant target) {
         super(actor);
@@ -37,6 +39,7 @@ public class ItemAction extends Action {
             return ActionResult.fail("Invalid item selection.");
         }
         Item item = player.getInventory().get(itemIndex);
+        executedItem = item; // Store before removal
         String msg;
         if (item.requiresTarget(player)) {
             msg = item.useWithTarget(player, ctx, target);
@@ -46,5 +49,9 @@ public class ItemAction extends Action {
         }
         player.removeItem(item);
         return ActionResult.ok(msg);
+    }
+
+    public boolean usedPowerStone() {
+        return executedItem instanceof PowerStone;
     }
 }

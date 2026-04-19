@@ -1,6 +1,7 @@
 package game;
 
 import action.ArcaneBlastSkill;
+import action.ItemAction;
 import combatant.*;
 import item.*;
 import game.DeveloperConfig.Difficulty;
@@ -99,7 +100,7 @@ public class Gameflow {
             GameUI.printTurnHeader(turnCount);
 
             currentTurn = new Turn(turnCount, player, enemies, orderedCombatants);
-            currentTurn.executeTurn(sc);
+            action.Action playerAction = currentTurn.executeTurn(sc);
 
             if(!player.isAlive()){
                 break;
@@ -116,6 +117,12 @@ public class Gameflow {
 
             Player currPlayer = gameSettings.getPlayer();
             GameUI.printRoundSummary(turnCount, currPlayer, enemies, deadEnemies);
+            
+            // Decrement cooldown after round summary, unless PowerStone was used
+            if (!(playerAction instanceof ItemAction && ((ItemAction) playerAction).usedPowerStone())) {
+                player.decrementSpecialSkillCooldown();
+            }
+            
             GameUI.waitBetweenRounds();
             turnCount++;
             history.add(currentTurn);

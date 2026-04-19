@@ -29,8 +29,14 @@ public interface StatusEffect {
         return 0;
     }
 
+    // Allow effects to modify incoming damage
     default int modifyDamage(int incomingDamage) {
         return incomingDamage;
+    }
+
+    // Decide whether this effect should be displayed in UI
+    default boolean shouldDisplay() {
+        return getRemainingTurns() > 0;
     }
 
     boolean isExpired();

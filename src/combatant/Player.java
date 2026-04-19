@@ -40,14 +40,15 @@ public abstract class Player extends Combatant {
     @Override
     public void onTurnStart() {
         super.onTurnStart();
-
-        // Don't tick cooldown if stunned or otherwise blocked
-        if (canAct() && specialSkillCooldown > 0) {
-            specialSkillCooldown--;
-        }
     }
 
      // Special Skill
+
+    public void decrementSpecialSkillCooldown() {
+        if (specialSkillCooldown > 0) {
+            specialSkillCooldown--;
+        }
+    }
 
     public boolean canUseSpecialSkill() {
         return specialSkillCooldown == 0 || hasPowerStoneCharge;

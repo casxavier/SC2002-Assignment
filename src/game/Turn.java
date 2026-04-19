@@ -18,12 +18,9 @@ public class Turn {
         this.turnOrder = turnOrder;
     }
 
-    public void executeTurn(Scanner sc) {
+    public Action executeTurn(Scanner sc) {
         // Call onTurnStart to clear any status effects or cooldowns
         player.onTurnStart();
-        for (Combatant enemy : enemies) {
-            enemy.onTurnStart();
-        }
         GameUI.printBattleState(player, enemies);
         while (true) {
             int choice = GameUI.promptTurnActionChoice(sc);
@@ -94,11 +91,12 @@ public class Turn {
                 if (c.equals(player)) {
                     executeAndReport(action);
                 } else if (c.isAlive()) {
+                    c.onTurnStart();
                     Action enemyAction = new BasicAttackAction(c, player);
                     executeAndReport(enemyAction);
                 }
             }
-            break;
+            return action;
         }
     }
 

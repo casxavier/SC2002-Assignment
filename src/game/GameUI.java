@@ -501,18 +501,28 @@ public final class GameUI {
             return "";
         }
 
-        StringBuilder sb = new StringBuilder("Status: ");
+        java.util.List<String> effectStrings = new java.util.ArrayList<>();
         for (int i = 0; i < effects.size(); i++) {
             status.StatusEffect effect = effects.get(i);
-            if (i > 0) sb.append(", ");
+            // Check if effect should be displayed
+            if (effect.shouldDisplay()) {
+                int duration = effect.getRemainingTurns();
+                if (duration > 0) {
+                    effectStrings.add(effect.getName() + " (" + duration + "t)");
+                } else {
+                    effectStrings.add(effect.getName());
+                }
+            }
+        }
+        
+        if (effectStrings.isEmpty()) {
+            return "";
+        }
 
-            int duration = effect.getRemainingTurns();
-            if (duration > 0) {
-                sb.append(effect.getName()).append(" (").append(duration).append("t)");
-            }
-            else {
-                sb.append(effect.getName());
-            }
+        StringBuilder sb = new StringBuilder("Status: ");
+        for (int i = 0; i < effectStrings.size(); i++) {
+            if (i > 0) sb.append(", ");
+            sb.append(effectStrings.get(i));
         }
         return sb.toString();
     }

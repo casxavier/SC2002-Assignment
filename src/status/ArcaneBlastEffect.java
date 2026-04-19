@@ -39,5 +39,10 @@ public class ArcaneBlastEffect implements StatusEffect {
         return false;
     }
 
+    @Override
+    public boolean shouldDisplay() {
+        // Show as long as there's an attack bonus accumulated
+        return totalBonus > 0;
+    }
 
 }
